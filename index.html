@@ -2,9 +2,9 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Selamat Ulang Tahun, sayanaggkuuu cintakuu</title>
+<title>Selamat Ulang Tahun, sayangkuuu cintakuu</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Patrick+Hand&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Quicksand:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Quicksand:wght@400;500;600&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <style type="text/tailwindcss">
 
@@ -19,7 +19,6 @@
   --font-script: "Great Vibes", cursive;
   --font-serif: "Playfair Display", serif;
   --font-body: "Quicksand", sans-serif;
-  --font-hand: "Patrick Hand", cursive;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -160,37 +159,6 @@
   box-shadow: 0 12px 28px -10px color-mix(in oklab, var(--rose) 30%, transparent);
   transform: translateZ(0);
 }
-/* Kertas Buku Bergaris Persis Contoh Gambar */
-@utility lined-paper {
-  background-color: #f6f8fa;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0px,
-    transparent 31px,
-    #cbd5e1 31px,
-    #cbd5e1 32px
-  );
-  background-position: 0 0.4rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 1.25rem;
-  box-shadow: 0 14px 30px -10px color-mix(in oklab, var(--rose-deep) 25%, transparent);
-  color: #1e293b;
-  font-family: var(--font-hand);
-  line-height: 2rem;
-}
-@utility lined-paper-inner {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0px,
-    transparent 31px,
-    #cbd5e1 31px,
-    #cbd5e1 32px
-  );
-  background-position: 0 0.4rem;
-  color: #1e293b;
-  font-family: var(--font-hand);
-  line-height: 2rem;
-}
 @utility polaroid {
   background: var(--card);
   padding: 0.75rem 0.75rem 1rem;
@@ -227,8 +195,6 @@
   border: 1px solid var(--blush);
   background: var(--cream);
   color: var(--rose-deep);
-  font-family: var(--font-body);
-  line-height: 1.25rem;
 }
 @utility chip-active {
   background: var(--rose);
@@ -241,13 +207,9 @@
 @utility envelope-wobble { animation: envPulse 2.2s ease-in-out infinite; will-change: transform; }
 @utility balloon-rise { bottom: -140px; animation: balloonUp linear infinite; will-change: transform; }
 @utility love-rain { bottom: -50px; animation: loveUp linear infinite; will-change: transform, opacity; }
-@utility letter-scroll-box {
-  background-color: #f6f8fa;
-  border: 1px solid #cbd5e1;
-  border-radius: 1.25rem;
-  box-shadow: 0 14px 30px -10px color-mix(in oklab, var(--rose-deep) 25%, transparent);
-  scrollbar-width: thin;
-  scrollbar-color: var(--blush) transparent;
+@utility letter-mask {
+  mask-image: linear-gradient(transparent, black 10%, black 90%, transparent);
+  scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   will-change: scroll-position;
   transform: translateZ(0);
@@ -304,4 +266,743 @@ const SWEET_WORDS = [
   "Dari tawa polos masa kecil hingga debar hangat masa remaja, hatiku ternyata selalu mencari jalan pulang menuju kamu.",
   "Terima kasih telah hadir kembali di hidupku, Someone. Mengenalmu dua kali adalah anugerah terindah dalam takdirku."
 ];
-const
+const MEMORIES = [
+  { src: "data:image/jpeg;base64,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=", caption: "Takdir SMA yang mempertemukan aku kembali denganmu, Someone", rot: 3 }
+];
+const LONG_LETTER = [
+  "Untukmu, Someone, yang hari ini merayakan indahnya hari kelahiran.",
+  "Jika aku menoleh ke belakang, rasanya begitu ajaib melihat bagaimana semesta merangkai kisah kita. Semuanya bermula dari kenangan sederhana di masa SD—saat kita masih berlarian dengan seragam putih merah, berbagi tawa polos tanpa tahu bahwa kelak, namamu akan menjadi nama yang paling berarti di dalam hidupku.",
+  "Waktu sempat membawa kita berjalan di persimpangan yang berbeda. Tahun-tahun berlalu, musim berganti, dan kita tumbuh dewasa dengan cerita masing-masing. Namun ternyata, benang takdir yang terikat sejak masa kecil itu tidak pernah benar-benar putus.",
+  "Hingga akhirnya, di bawah langit masa SMA dengan seragam putih abu-abu, semesta kembali mempertemukan kita. Saat mataku kembali menangkap sosokmu dan melihat senyummu lagi setelah sekian lama, ada debar hangat yang seketika menyadarkanku: ternyata sejauh apa pun langkah kita sempat berjarak, hatiku tetap mengenali rumahnya.",
+  "Pertemuan kembali di masa SMA ini bukan sekadar kebetulan bagiku, melainkan cara Tuhan menjawab rindu yang bahkan dulu belum sempat kupahami namanya. Mengenalmu di masa kecil adalah sebuah keberuntungan, namun dipertemukan kembali denganmu saat remaja adalah keajaiban yang paling kusyukuri.",
+  "Someone, terima kasih karena tetap memiliki tatapan dan senyuman yang menenangkan seperti dulu, namun dengan kehadiran yang kini jauh lebih menghangatkan hatiku. Bersamamu, setiap sudut sekolah, setiap obrolan ringan, dan setiap senja yang kita lewati terasa begitu istimewa.",
+  "Di hari ulang tahunmu ini, aku berdoa semoga langkahmu selalu dipeluk oleh kebahagiaan. Semoga setiap mimpi yang sedang kamu perjuangkan di masa putih abu-abu ini satu per satu menemukan jalannya untuk terwujud, dan semoga tidak ada hal apa pun yang memudarkan senyum indahmu.",
+  "Terima kasih sudah kembali ke dalam cerita hidupku dan menjadi tempat ternyaman untuk hatiku berlabuh. Selamat ulang tahun, Someone. Aku menyayangimu—dari kenangan masa lalu, di setiap detik hari ini, hingga ribuan hari esok yang akan kita tempuh bersama."
+];
+const FINAL_WISH = "Selamat ulang tahun, Someone tersayang. Semoga panjang umur, sehat selalu, makin bahagia, dan semua mimpimu tercapai. Dari masa SD hingga kita bertemu lagi di SMA ini, aku akan selalu di sini untukmu.";
+
+const LOVE_MESSAGES = [
+  "I Love You, Sayangkuuu! ❤️",
+  "Aku sayang banget sama kamu, Someone! Lebih dari kata-kata yang bisa kuucapkan 💕",
+  "Terima kasih sudah hadir di masa kecilku dan kembali menjadi cinta terindah di masa SMA-ku ✨",
+  "I love you 3000, sayangku, cintaku, rumah ternyamanku, dan masa depanku! 🥰💖"
+];
+
+const LOVE_BADGES = [
+  "I Love You Sayangkuuu ❤️",
+  "Sayang Kamu Banyak-Banyak 💕",
+  "My Favorite Person 🥰",
+  "Takdir Terindahku ✨",
+  "Forever & Always 💍",
+  "Peluk Hangat Untukmu 🤗",
+  "Cintaku Selamanya 🌸"
+];
+
+const Heart = React.memo(function Heart({ className = "", style }) {
+  return /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 32 29", className, style, fill: "currentColor" }, /* @__PURE__ */ React.createElement("path", { d: "M16 29 2.7 15.6A8.2 8.2 0 0 1 16 4.5a8.2 8.2 0 0 1 13.3 11.1Z" }));
+});
+
+const GiftBox = React.memo(function GiftBox({ open }) {
+  return /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 200 200", className: "w-56 h-56 overflow-visible" }, /* @__PURE__ */ React.createElement("rect", { x: "35", y: "90", width: "130", height: "95", rx: "10", fill: "var(--rose)" }), /* @__PURE__ */ React.createElement("rect", { x: "92", y: "90", width: "16", height: "95", fill: "var(--cream)" }), /* @__PURE__ */ React.createElement(
+    "g",
+    {
+      style: {
+        transformOrigin: "100px 90px",
+        transform: open ? "translate3d(0, -70px, 0) rotate(-25deg)" : "none",
+        transition: "transform .7s cubic-bezier(.3,1.5,.5,1)",
+        willChange: "transform"
+      }
+    },
+    /* @__PURE__ */ React.createElement("rect", { x: "25", y: "65", width: "150", height: "30", rx: "8", fill: "var(--blush)" }),
+    /* @__PURE__ */ React.createElement("rect", { x: "92", y: "65", width: "16", height: "30", fill: "var(--cream)" }),
+    /* @__PURE__ */ React.createElement("path", { d: "M100 65c-20-30-50-25-40-5 5 8 25 6 40 5Z", fill: "var(--cream)", stroke: "var(--rose-deep)", strokeWidth: "3" }),
+    /* @__PURE__ */ React.createElement("path", { d: "M100 65c20-30 50-25 40-5-5 8-25 6-40 5Z", fill: "var(--cream)", stroke: "var(--rose-deep)", strokeWidth: "3" })
+  ));
+});
+
+const EnvelopeSvg = React.memo(function EnvelopeSvg({ flapOpen, paperUp }) {
+  const flapElement = /* @__PURE__ */ React.createElement(
+    "g",
+    {
+      style: {
+        transformOrigin: "120px 80px",
+        transform: flapOpen ? "scaleY(-1)" : "scaleY(1)",
+        transition: "transform 0.36s ease-in-out",
+        willChange: "transform"
+      }
+    },
+    /* @__PURE__ */ React.createElement("path", {
+      d: "M20 80 L120 146 L220 80 Z",
+      fill: "var(--rose-deep)"
+    })
+  );
+
+  const paperElement = /* @__PURE__ */ React.createElement(
+    "g",
+    {
+      style: {
+        transform: paperUp ? "translate3d(0, -64px, 0)" : "translate3d(0, 0px, 0)",
+        transition: "transform 0.75s cubic-bezier(0.22, 1.35, 0.36, 1)",
+        willChange: "transform"
+      }
+    },
+    /* @__PURE__ */ React.createElement("rect", {
+      x: "34",
+      y: "84",
+      width: "172",
+      height: "110",
+      rx: "8",
+      fill: "var(--cream)",
+      stroke: "var(--blush)",
+      strokeWidth: "2"
+    }),
+    /* @__PURE__ */ React.createElement("path", {
+      d: "M120 112 L113 105 A5 5 0 0 1 120 98 A5 5 0 0 1 127 105 Z",
+      fill: "var(--rose)"
+    }),
+    /* @__PURE__ */ React.createElement(
+      "text",
+      {
+        x: "120",
+        y: "131",
+        textAnchor: "middle",
+        fill: "var(--rose-deep)",
+        fontSize: "17",
+        fontWeight: "bold",
+        fontFamily: "Playfair Display, serif"
+      },
+      "I ❤️ U, Someone"
+    ),
+    /* @__PURE__ */ React.createElement("line", { x1: "58", y1: "145", x2: "182", y2: "145", stroke: "var(--blush)", strokeWidth: "2.5", strokeLinecap: "round" }),
+    /* @__PURE__ */ React.createElement("line", { x1: "72", y1: "156", x2: "168", y2: "156", stroke: "var(--blush)", strokeWidth: "2.5", strokeLinecap: "round" })
+  );
+
+  return /* @__PURE__ */ React.createElement(
+    "svg",
+    { viewBox: "0 0 240 210", className: "w-64 h-56 overflow-visible drop-shadow-md" },
+    /* @__PURE__ */ React.createElement("rect", { x: "20", y: "80", width: "200", height: "120", rx: "10", fill: "var(--rose-deep)" }),
+    paperUp && flapElement,
+    paperElement,
+    /* @__PURE__ */ React.createElement("path", { d: "M20 80 L120 150 L20 198 Z", fill: "var(--blush)" }),
+    /* @__PURE__ */ React.createElement("path", { d: "M220 80 L120 150 L220 198 Z", fill: "var(--blush)" }),
+    /* @__PURE__ */ React.createElement("path", { d: "M20 196 L120 136 L220 196 Q220 200 212 200 L28 200 Q20 200 20 196 Z", fill: "var(--rose)" }),
+    !paperUp && flapElement,
+    !flapOpen && /* @__PURE__ */ React.createElement(
+      "g",
+      { transform: "translate(104, 130)" },
+      /* @__PURE__ */ React.createElement("circle", { cx: "16", cy: "14", r: "17", fill: "var(--cream)", stroke: "var(--gold)", strokeWidth: "2.5" }),
+      /* @__PURE__ */ React.createElement("path", { d: "M16 23 7.5 14.5A5.5 5.5 0 0 1 16 7a5.5 5.5 0 0 1 8.5 7.5Z", fill: "var(--rose)" })
+    )
+  );
+});
+
+const Face = React.memo(function Face({ mood }) {
+  return /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 120 120", className: "w-28 h-28" }, /* @__PURE__ */ React.createElement("circle", { cx: "60", cy: "60", r: mood === "pout" ? 52 : 48, fill: "var(--cream)", stroke: "var(--rose)", strokeWidth: "4" }), /* @__PURE__ */ React.createElement("ellipse", { cx: "32", cy: "72", rx: mood === "pout" ? 13 : 9, ry: "7", fill: "var(--blush)" }), /* @__PURE__ */ React.createElement("ellipse", { cx: "88", cy: "72", rx: mood === "pout" ? 13 : 9, ry: "7", fill: "var(--blush)" }), mood === "happy" ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("path", { d: "M38 52q6-8 12 0M70 52q6-8 12 0", stroke: "var(--rose-deep)", strokeWidth: "4", fill: "none", strokeLinecap: "round" }), /* @__PURE__ */ React.createElement("path", { d: "M45 74q15 16 30 0", stroke: "var(--rose-deep)", strokeWidth: "4", fill: "var(--rose)", strokeLinecap: "round" })) : mood === "pout" ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("path", { d: "M36 46l14 6M84 46l-14 6", stroke: "var(--rose-deep)", strokeWidth: "4", strokeLinecap: "round" }), /* @__PURE__ */ React.createElement("circle", { cx: "44", cy: "58", r: "4", fill: "var(--rose-deep)" }), /* @__PURE__ */ React.createElement("circle", { cx: "76", cy: "58", r: "4", fill: "var(--rose-deep)" }), /* @__PURE__ */ React.createElement("path", { d: "M50 84q10-8 20 0", stroke: "var(--rose-deep)", strokeWidth: "4", fill: "none", strokeLinecap: "round" })) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("circle", { cx: "44", cy: "54", r: "4", fill: "var(--rose-deep)" }), /* @__PURE__ */ React.createElement("circle", { cx: "76", cy: "54", r: "4", fill: "var(--rose-deep)" }), /* @__PURE__ */ React.createElement("path", { d: "M50 76q10 8 20 0", stroke: "var(--rose-deep)", strokeWidth: "4", fill: "none", strokeLinecap: "round" })));
+});
+
+const Balloon = React.memo(function Balloon({ className = "" }) {
+  return /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 60 120", className }, /* @__PURE__ */ React.createElement("ellipse", { cx: "30", cy: "30", rx: "24", ry: "29", fill: "currentColor" }), /* @__PURE__ */ React.createElement("path", { d: "M27 58h6l-3 6Z", fill: "currentColor" }), /* @__PURE__ */ React.createElement("path", { d: "M30 64q-6 14 0 28t0 28", stroke: "var(--rose-deep)", fill: "none", strokeWidth: "1.5" }), /* @__PURE__ */ React.createElement("ellipse", { cx: "22", cy: "20", rx: "5", ry: "8", fill: "var(--cream)", opacity: ".5" }));
+});
+
+const Flower = React.memo(function Flower({ className = "" }) {
+  return /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 100 100", className }, [0, 72, 144, 216, 288].map((r) => /* @__PURE__ */ React.createElement("ellipse", { key: r, cx: "50", cy: "28", rx: "15", ry: "22", fill: "var(--blush)", transform: `rotate(${r} 50 50)` })), /* @__PURE__ */ React.createElement("circle", { cx: "50", cy: "50", r: "11", fill: "var(--gold)" }));
+});
+
+const Bear = React.memo(function Bear({ className = "", mood = "idle" }) {
+  return /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 120 120", className }, /* @__PURE__ */ React.createElement("circle", { cx: "28", cy: "30", r: "16", fill: "var(--bear)" }), /* @__PURE__ */ React.createElement("circle", { cx: "92", cy: "30", r: "16", fill: "var(--bear)" }), /* @__PURE__ */ React.createElement("circle", { cx: "28", cy: "30", r: "8", fill: "var(--blush)" }), /* @__PURE__ */ React.createElement("circle", { cx: "92", cy: "30", r: "8", fill: "var(--blush)" }), /* @__PURE__ */ React.createElement("circle", { cx: "60", cy: "64", r: "44", fill: "var(--bear)" }), /* @__PURE__ */ React.createElement("ellipse", { cx: "60", cy: "80", rx: "20", ry: "15", fill: "var(--cream)" }), /* @__PURE__ */ React.createElement("ellipse", { cx: "60", cy: "73", rx: "6", ry: "4.5", fill: "var(--rose-deep)" }), mood === "pout" ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("path", { d: "M36 52l12 5M84 52l-12 5", stroke: "var(--rose-deep)", strokeWidth: "4", strokeLinecap: "round" }), /* @__PURE__ */ React.createElement("path", { d: "M53 88q7-6 14 0", stroke: "var(--rose-deep)", strokeWidth: "3", fill: "none", strokeLinecap: "round" })) : mood === "happy" ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("path", { d: "M37 58q6-7 12 0M71 58q6-7 12 0", stroke: "var(--rose-deep)", strokeWidth: "4", fill: "none", strokeLinecap: "round" }), /* @__PURE__ */ React.createElement("path", { d: "M52 83q8 8 16 0", stroke: "var(--rose-deep)", strokeWidth: "3", fill: "none", strokeLinecap: "round" })) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("circle", { cx: "43", cy: "58", r: "4.5", fill: "var(--rose-deep)" }), /* @__PURE__ */ React.createElement("circle", { cx: "77", cy: "58", r: "4.5", fill: "var(--rose-deep)" }), /* @__PURE__ */ React.createElement("path", { d: "M54 84q6 5 12 0", stroke: "var(--rose-deep)", strokeWidth: "3", fill: "none", strokeLinecap: "round" })), /* @__PURE__ */ React.createElement("ellipse", { cx: "30", cy: "74", rx: "8", ry: "5", fill: "var(--blush)" }), /* @__PURE__ */ React.createElement("ellipse", { cx: "90", cy: "74", rx: "8", ry: "5", fill: "var(--blush)" }), /* @__PURE__ */ React.createElement("path", { d: "M60 108 52 100a5 5 0 0 1 8-6 5 5 0 0 1 8 6Z", fill: "var(--rose)" }));
+});
+
+const LoveShower = React.memo(function LoveShower({ active }) {
+  if (!active) return null;
+  const hearts = Array.from({ length: 28 }, (_, i) => i);
+  return /* @__PURE__ */ React.createElement(
+    "div",
+    { className: "pointer-events-none fixed inset-0 z-30 overflow-hidden" },
+    hearts.map((k) => /* @__PURE__ */ React.createElement(
+      Heart,
+      {
+        key: k,
+        className: `love-rain absolute ${k % 3 === 0 ? "text-rose" : k % 3 === 1 ? "text-rose-deep" : "text-gold"}`,
+        style: {
+          left: `${(k * 17 + 5) % 95}%`,
+          width: `${16 + (k % 4) * 8}px`,
+          animationDuration: `${3.2 + (k % 5) * 0.8}s`,
+          animationDelay: `${(k % 7) * 0.25}s`
+        }
+      }
+    ))
+  );
+});
+
+const page = {
+  initial: { opacity: 0, y: 24, scale: 0.98 },
+  animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: "easeOut" } },
+  exit: { opacity: 0, y: -24, scale: 0.98, transition: { duration: 0.25, ease: "easeIn" } }
+};
+
+function Birthday() {
+  const [stage, setStage] = useState("gift");
+  const [burst, setBurst] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const audioRef = useRef(null);
+
+  const toggleMusic = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (playing) {
+      audio.pause();
+      setPlaying(false);
+    } else {
+      audio.play().then(() => setPlaying(true)).catch(() => {});
+    }
+  };
+
+  const go = (s, b = false) => {
+    if (b) setBurst((n) => n + 1);
+    if (s === "quiz" && audioRef.current && !playing) {
+      audioRef.current.play().then(() => setPlaying(true)).catch(() => {});
+    }
+    setStage(s);
+    window.scrollTo({ top: 0, behavior: "instant" });
+  };
+
+  return /* @__PURE__ */ React.createElement("main", { className: "relative min-h-screen overflow-x-hidden bg-flow font-body text-foreground" },
+    /* @__PURE__ */ React.createElement("audio", { ref: audioRef, src: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3", loop: true }),
+    /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        onClick: toggleMusic,
+        "aria-label": "Kontrol Musik",
+        className: "fixed right-4 top-4 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-blush bg-card shadow-md transition-transform active:scale-90 cursor-pointer"
+      },
+      playing ? "🎵" : "🔇"
+    ),
+    /* @__PURE__ */ React.createElement(FloatingHearts, null),
+    /* @__PURE__ */ React.createElement(FloatingBears, null),
+    /* @__PURE__ */ React.createElement(Confetti, { key: burst, active: burst > 0 }),
+    /* @__PURE__ */ React.createElement("div", { className: `relative z-10 mx-auto flex min-h-screen max-w-xl justify-center px-5 py-10 ${stage === "photos" || stage === "letter" ? "items-start" : "items-center"}` },
+      /* @__PURE__ */ React.createElement(AnimatePresence, { mode: "wait" },
+        stage === "gift" && /* @__PURE__ */ React.createElement(GiftStage, { key: "g", onDone: () => go("quiz", true) }),
+        stage === "quiz" && /* @__PURE__ */ React.createElement(QuizStage, { key: "q", onDone: () => go("card", true) }),
+        stage === "card" && /* @__PURE__ */ React.createElement(CardStage, { key: "c", onDone: () => go("ask") }),
+        stage === "ask" && /* @__PURE__ */ React.createElement(AskStage, { key: "a", onDone: () => go("photos") }),
+        stage === "photos" && /* @__PURE__ */ React.createElement(PhotoStage, { key: "p", onDone: () => go("letter", true), onBurst: () => setBurst((n) => n + 1) }),
+        stage === "letter" && /* @__PURE__ */ React.createElement(LetterStage, { key: "l", onBurst: () => setBurst((n) => n + 1), onRestart: () => go("gift", true) })
+      )
+    )
+  );
+}
+
+function GiftStage({ onDone }) {
+  const [open, setOpen] = useState(false);
+  return /* @__PURE__ */ React.createElement(motion.section, { ...page, className: "flex flex-col items-center text-center" },
+    /* @__PURE__ */ React.createElement("p", { className: "font-serif text-sm uppercase tracking-[0.4em] text-rose-deep" }, "ada kejutan kecil"),
+    /* @__PURE__ */ React.createElement("h1", { className: "mt-3 font-script text-6xl text-rose-deep" }, "Untukmu"),
+    /* @__PURE__ */ React.createElement(
+      motion.button,
+      {
+        "aria-label": "Buka kado",
+        className: "mt-8",
+        animate: open ? {} : { rotate: [0, -3, 3, -3, 0] },
+        transition: { repeat: Infinity, duration: 1.8, repeatDelay: 1.2 },
+        whileTap: { scale: 0.94 },
+        onClick: () => {
+          if (open) return;
+          setOpen(true);
+          setTimeout(onDone, 800);
+        }
+      },
+      /* @__PURE__ */ React.createElement(GiftBox, { open })
+    ),
+    /* @__PURE__ */ React.createElement("p", { className: "mt-4 animate-pulse text-muted-foreground" }, "Ketuk kadonya untuk membuka")
+  );
+}
+
+function QuizStage({ onDone }) {
+  const [mood, setMood] = useState("idle");
+  const [line, setLine] = useState("Hayoo, siapa yang lagi ultah yaa?");
+  const [offsets, setOffsets] = useState({});
+  const shake = useAnimation();
+  const pick = (o) => {
+    if (o === BIRTHDAY_NAME) {
+      setMood("happy");
+      setLine("Nahh benerr!");
+      setTimeout(onDone, 1200);
+      return;
+    }
+    setMood("pout");
+    setLine(WRONG_LINES[Math.floor(Math.random() * WRONG_LINES.length)] ?? "Ihh salahh");
+    shake.start({ x: [0, -10, 10, -8, 8, 0], transition: { duration: 0.35 } });
+    setOffsets((p) => ({ ...p, [o]: { x: Math.round((Math.random() - 0.5) * 70), y: Math.round((Math.random() - 0.5) * 26) } }));
+    setTimeout(() => setMood("idle"), 1000);
+  };
+  return /* @__PURE__ */ React.createElement(motion.section, { ...page, className: "w-full text-center" },
+    /* @__PURE__ */ React.createElement(motion.div, { animate: shake, className: "flex flex-col items-center" },
+      /* @__PURE__ */ React.createElement("div", { className: "flex items-end gap-2" },
+        /* @__PURE__ */ React.createElement(Bear, { className: "h-24 w-24", mood }),
+        /* @__PURE__ */ React.createElement(Face, { mood })
+      ),
+      /* @__PURE__ */ React.createElement("h2", { className: `mt-4 font-serif text-3xl transition-colors duration-200 ${mood === "happy" ? "text-rose-deep" : "text-foreground"}` }, line)
+    ),
+    /* @__PURE__ */ React.createElement("div", { className: "mt-8 grid grid-cols-2 gap-4" },
+      QUIZ_OPTIONS.map((o) => /* @__PURE__ */ React.createElement(
+        motion.button,
+        {
+          key: o,
+          animate: offsets[o] ?? { x: 0, y: 0 },
+          transition: { type: "tween", duration: 0.2 },
+          whileTap: { scale: 0.94 },
+          onClick: () => pick(o),
+          disabled: mood === "happy",
+          className: "btn-soft cursor-pointer"
+        },
+        o
+      ))
+    )
+  );
+}
+
+function CardStage({ onDone }) {
+  const [mode, setMode] = useState("Romantis");
+  const text = TEMPLATES[mode];
+  const textRef = useRef(null);
+  const [done, setDone] = useState(false);
+  const [word, setWord] = useState(0);
+
+  useEffect(() => {
+    const el = textRef.current;
+    if (!el) return;
+    el.textContent = "";
+    setDone(false);
+    const duration = 12000;
+    const total = text.length;
+    let raf = 0;
+    let start = null;
+    let lastCount = -1;
+
+    const tick = (now) => {
+      if (start === null) start = now;
+      const elapsed = now - start;
+      const progress = Math.min(1, elapsed / duration);
+      const count = Math.floor(progress * total);
+      if (count !== lastCount) {
+        el.textContent = text.slice(0, count);
+        lastCount = count;
+      }
+      if (progress < 1) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        el.textContent = text;
+        setDone(true);
+      }
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [text]);
+
+  const finishNow = () => {
+    if (!done && textRef.current) {
+      textRef.current.textContent = text;
+      setDone(true);
+    }
+  };
+
+  return /* @__PURE__ */ React.createElement(motion.section, { ...page, className: "w-full" },
+    /* @__PURE__ */ React.createElement("div", { className: "mb-5 flex flex-wrap justify-center gap-2" },
+      Object.keys(TEMPLATES).map((k) => /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          key: k,
+          onClick: () => setMode(k),
+          className: `chip transition-colors cursor-pointer ${mode === k ? "chip-active" : ""}`
+        },
+        k
+      ))
+    ),
+    /* @__PURE__ */ React.createElement(
+      motion.div,
+      {
+        initial: { opacity: 0, scale: 0.92, y: 16 },
+        animate: { opacity: 1, scale: 1, y: 0 },
+        transition: { duration: 0.45, ease: "easeOut" },
+        onClick: finishNow,
+        className: "card-paper relative p-8 text-center cursor-pointer"
+      },
+      /* @__PURE__ */ React.createElement(Flower, { className: "absolute -left-6 -top-6 h-16 w-16 animate-spin-slow" }),
+      /* @__PURE__ */ React.createElement(Flower, { className: "absolute -bottom-6 -right-6 h-14 w-14 animate-spin-slow" }),
+      /* @__PURE__ */ React.createElement("p", { className: "font-serif text-xs uppercase tracking-[0.4em] text-rose-deep" }, `ucapan kado • ${mode}`),
+      /* @__PURE__ */ React.createElement("h2", { className: "mt-2 font-script text-5xl text-rose-deep" }, "Happy Birthday"),
+      /* @__PURE__ */ React.createElement("p", { className: "mt-5 min-h-28 font-serif text-lg leading-relaxed" },
+        /* @__PURE__ */ React.createElement("span", { ref: textRef }),
+        !done && /* @__PURE__ */ React.createElement("span", { className: "caret" }, "|")
+      ),
+      /* @__PURE__ */ React.createElement(Bear, { className: "absolute -bottom-10 left-1/2 h-20 w-20 -translate-x-1/2" })
+    ),
+    /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        onClick: () => setWord((w) => (w + 1) % SWEET_WORDS.length),
+        className: "mt-8 w-full rounded-2xl border border-border bg-card p-4 text-center italic text-muted-foreground transition-transform active:scale-95 cursor-pointer"
+      },
+      /* @__PURE__ */ React.createElement("span", { className: "block" }, '"', SWEET_WORDS[word], '"'),
+      /* @__PURE__ */ React.createElement("span", { className: "mt-1 block text-xs not-italic" }, "ketuk untuk kata manis berikutnya")
+    ),
+    /* @__PURE__ */ React.createElement(AnimatePresence, null,
+      done && /* @__PURE__ */ React.createElement(motion.div, { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.3 }, className: "mt-6 text-center" },
+        /* @__PURE__ */ React.createElement("button", { onClick: onDone, className: "btn-primary cursor-pointer" }, "Lanjut")
+      )
+    )
+  );
+}
+
+function AskStage({ onDone }) {
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const flee = () => setPos({ x: Math.round((Math.random() - 0.5) * 200), y: Math.round((Math.random() - 0.5) * 140) });
+  return /* @__PURE__ */ React.createElement(motion.section, { ...page, className: "text-center" },
+    /* @__PURE__ */ React.createElement("div", { className: "float-deco", style: { animationDuration: "2.4s" } },
+      /* @__PURE__ */ React.createElement(Bear, { className: "mx-auto h-28 w-28", mood: "happy" })
+    ),
+    /* @__PURE__ */ React.createElement("h2", { className: "mt-6 font-serif text-3xl" }, "Mau lanjut liat kenangan kitaa?"),
+    /* @__PURE__ */ React.createElement("div", { className: "mt-8 flex items-center justify-center gap-4" },
+      /* @__PURE__ */ React.createElement("button", { onClick: onDone, className: "btn-primary cursor-pointer" }, "Mauu"),
+      /* @__PURE__ */ React.createElement(motion.button, { animate: pos, transition: { type: "tween", duration: 0.18 }, onMouseEnter: flee, onTouchStart: flee, onClick: flee, className: "btn-soft cursor-pointer" }, "Nggak")
+    )
+  );
+}
+
+function PhotoStage({ onDone, onBurst }) {
+  const [autoScroll, setAutoScroll] = useState(true);
+  const [flapOpen, setFlapOpen] = useState(false);
+  const [paperUp, setPaperUp] = useState(false);
+  const autoRef = useRef(true);
+  const loveCardRef = useRef(null);
+
+  useEffect(() => {
+    autoRef.current = autoScroll;
+  }, [autoScroll]);
+
+  useEffect(() => {
+    let raf = 0;
+    let lastTime = null;
+    let currentY = window.scrollY;
+    const speedPxPerSec = 95;
+
+    const step = (now) => {
+      if (!autoRef.current) {
+        lastTime = null;
+        raf = requestAnimationFrame(step);
+        return;
+      }
+      if (lastTime === null) {
+        lastTime = now;
+        currentY = window.scrollY;
+      }
+      const dt = (now - lastTime) / 1000;
+      lastTime = now;
+
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (currentY < maxScroll - 4) {
+        currentY = Math.min(maxScroll, currentY + speedPxPerSec * dt);
+        window.scrollTo(0, currentY);
+        raf = requestAnimationFrame(step);
+      } else {
+        setAutoScroll(false);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      raf = requestAnimationFrame(step);
+    }, 700);
+
+    const stopOnManual = () => {
+      if (autoRef.current) {
+        autoRef.current = false;
+        setAutoScroll(false);
+      }
+    };
+
+    window.addEventListener("wheel", stopOnManual, { passive: true });
+    window.addEventListener("touchmove", stopOnManual, { passive: true });
+
+    return () => {
+      clearTimeout(timer);
+      cancelAnimationFrame(raf);
+      window.removeEventListener("wheel", stopOnManual);
+      window.removeEventListener("touchmove", stopOnManual);
+    };
+  }, []);
+
+  const handleOpenEnvelope = () => {
+    if (flapOpen) return;
+    setAutoScroll(false);
+    setFlapOpen(true);
+    setTimeout(() => {
+      setPaperUp(true);
+      if (onBurst) onBurst();
+    }, 180);
+    setTimeout(() => {
+      if (loveCardRef.current) {
+        loveCardRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 650);
+  };
+
+  return /* @__PURE__ */ React.createElement(
+    motion.section,
+    { ...page, className: "w-full text-center pb-28" },
+    /* @__PURE__ */ React.createElement(LoveShower, { active: paperUp }),
+    /* @__PURE__ */ React.createElement("p", { className: "font-serif text-xs uppercase tracking-[0.4em] text-rose-deep" }, "kenangan kita"),
+    /* @__PURE__ */ React.createElement("h2", { className: "mt-2 font-script text-5xl text-rose-deep" }, "Scroll pelan-pelan yaa"),
+    /* @__PURE__ */ React.createElement("div", { className: "mt-4 flex justify-center float-deco", style: { animationDuration: "2.5s" } },
+      /* @__PURE__ */ React.createElement(Bear, { className: "h-20 w-20" })
+    ),
+    /* @__PURE__ */ React.createElement("div", { className: "h-[15vh]" }),
+    MEMORIES.map((m, k) => /* @__PURE__ */ React.createElement(
+      motion.figure,
+      {
+        key: k,
+        className: "polaroid relative mx-auto mb-[18vh] w-fit",
+        initial: { opacity: 0, y: 50, rotate: m.rot },
+        whileInView: { opacity: 1, y: 0, rotate: m.rot },
+        viewport: { once: true, amount: 0.25 },
+        transition: { duration: 0.45, ease: "easeOut" }
+      },
+      /* @__PURE__ */ React.createElement("img", { src: m.src, alt: m.caption, width: 420, height: 490, loading: "lazy", decoding: "async", className: "h-96 w-72 object-cover rounded-xs" }),
+      /* @__PURE__ */ React.createElement("figcaption", { className: "mt-3 max-w-72 font-script text-2xl text-rose-deep" }, m.caption),
+      /* @__PURE__ */ React.createElement(Bear, { className: `absolute -bottom-8 h-16 w-16 ${k % 2 ? "-left-8" : "-right-8"}` })
+    )),
+    /* @__PURE__ */ React.createElement(
+      "div",
+      { className: "mt-12 flex flex-col items-center justify-center pt-8" },
+      /* @__PURE__ */ React.createElement("p", { className: "font-serif text-sm uppercase tracking-[0.3em] text-rose-deep" }, "kejutan spesial untukmu"),
+      /* @__PURE__ */ React.createElement("h3", { className: "mt-2 font-script text-5xl text-rose-deep" }, paperUp ? "Surat Cinta Terbuka!" : "Ada Surat Cinta Untukmu"),
+      /* @__PURE__ */ React.createElement(
+        motion.button,
+        {
+          type: "button",
+          onClick: handleOpenEnvelope,
+          whileTap: { scale: 0.93 },
+          className: `mt-10 relative flex flex-col items-center focus:outline-none ${!flapOpen ? "envelope-wobble cursor-pointer" : "cursor-default"}`
+        },
+        /* @__PURE__ */ React.createElement(Heart, { className: "absolute -left-6 -top-2 h-7 w-7 text-rose animate-bounce" }),
+        /* @__PURE__ */ React.createElement(Heart, { className: "absolute -right-6 top-0 h-6 w-6 text-gold animate-pulse" }),
+        /* @__PURE__ */ React.createElement(Heart, { className: "absolute -left-4 bottom-4 h-5 w-5 text-rose-deep animate-pulse" }),
+        /* @__PURE__ */ React.createElement(EnvelopeSvg, { flapOpen, paperUp }),
+        !flapOpen && /* @__PURE__ */ React.createElement("span", { className: "mt-4 inline-flex items-center gap-2 rounded-full bg-rose px-6 py-2.5 text-sm font-semibold text-cream shadow-lg animate-pulse" }, "💌 Ketuk Surat Untuk Membuka")
+      ),
+      /* @__PURE__ */ React.createElement(
+        AnimatePresence,
+        null,
+        paperUp && /* @__PURE__ */ React.createElement(
+          motion.div,
+          {
+            ref: loveCardRef,
+            initial: { opacity: 0, scale: 0.88, y: 28 },
+            animate: { opacity: 1, scale: 1, y: 0 },
+            transition: { duration: 0.5, ease: "easeOut" },
+            className: "card-paper relative mt-8 w-full p-8 text-center"
+          },
+          /* @__PURE__ */ React.createElement("div", { className: "flex justify-center gap-3 mb-3" },
+            /* @__PURE__ */ React.createElement(Heart, { className: "h-8 w-8 text-rose animate-bounce" }),
+            /* @__PURE__ */ React.createElement(Heart, { className: "h-10 w-10 text-rose-deep animate-pulse" }),
+            /* @__PURE__ */ React.createElement(Heart, { className: "h-8 w-8 text-rose animate-bounce" })
+          ),
+          /* @__PURE__ */ React.createElement("h2", { className: "font-script text-5xl text-rose-deep" }, LOVE_MESSAGES[0]),
+          /* @__PURE__ */ React.createElement("p", { className: "mt-4 font-serif text-lg leading-relaxed text-foreground" }, LOVE_MESSAGES[1]),
+          /* @__PURE__ */ React.createElement("p", { className: "mt-3 font-serif text-base italic text-muted-foreground" }, LOVE_MESSAGES[2]),
+          /* @__PURE__ */ React.createElement("p", { className: "mt-3 font-serif text-lg font-semibold text-rose-deep" }, LOVE_MESSAGES[3]),
+          /* @__PURE__ */ React.createElement("div", { className: "mt-6 flex flex-wrap justify-center gap-2" },
+            LOVE_BADGES.map((badge, idx) => /* @__PURE__ */ React.createElement("span", { key: idx, className: "chip shadow-xs" }, badge))
+          ),
+          /* @__PURE__ */ React.createElement("div", { className: "mt-8 pt-4 border-t border-border" },
+            /* @__PURE__ */ React.createElement("p", { className: "mb-4 text-xs uppercase tracking-widest text-muted-foreground" }, "ada satu surat terakhir untukmu"),
+            /* @__PURE__ */ React.createElement("button", { onClick: onDone, className: "btn-primary inline-flex items-center gap-2 cursor-pointer" }, "📜 Baca Surat Terakhir")
+          )
+        )
+      )
+    )
+  );
+}
+
+function LetterStage({ onBurst, onRestart }) {
+  const box = useRef(null);
+  const finalWishRef = useRef(null);
+  const [finished, setFinished] = useState(false);
+  const auto = useRef(true);
+
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    let raf = 0;
+    let lastTime = null;
+    const duration = 30000;
+    let accumulatedMs = 0;
+
+    const step = (now) => {
+      if (!auto.current) return;
+      if (lastTime === null) lastTime = now;
+      const dt = now - lastTime;
+      lastTime = now;
+      accumulatedMs += dt;
+
+      const maxScroll = el.scrollHeight - el.clientHeight;
+      if (maxScroll <= 0) {
+        setFinished(true);
+        return;
+      }
+      const progress = Math.min(1, accumulatedMs / duration);
+      el.scrollTop = progress * maxScroll;
+
+      if (progress >= 1) {
+        setFinished(true);
+        if (onBurst) onBurst();
+        return;
+      }
+      raf = requestAnimationFrame(step);
+    };
+
+    const t = setTimeout(() => {
+      raf = requestAnimationFrame(step);
+    }, 500);
+
+    return () => {
+      clearTimeout(t);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (finished && finalWishRef.current) {
+      const t = setTimeout(() => {
+        finalWishRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 350);
+      return () => clearTimeout(t);
+    }
+  }, [finished]);
+
+  const stopAuto = () => {
+    if (auto.current) {
+      auto.current = false;
+      setFinished(true);
+      if (onBurst) onBurst();
+    }
+  };
+
+  return /* @__PURE__ */ React.createElement(
+    motion.section,
+    { ...page, className: "w-full text-center pb-24" },
+    /* @__PURE__ */ React.createElement(LoveShower, { active: finished }),
+    /* @__PURE__ */ React.createElement(
+      "div",
+      {
+        ref: box,
+        onWheel: stopAuto,
+        onTouchStart: stopAuto,
+        className: "letter-mask card-paper h-[62vh] overflow-y-auto px-7 py-[16vh] text-left font-serif text-lg leading-loose"
+      },
+      LONG_LETTER.map((p, k) => /* @__PURE__ */ React.createElement("p", { key: k, className: k === 0 ? "mb-6 font-script text-3xl text-rose-deep" : "mb-6" }, p)),
+      /* @__PURE__ */ React.createElement("div", { className: "mt-10 pt-6 border-t border-blush text-center" },
+        /* @__PURE__ */ React.createElement("p", { className: "font-script text-4xl text-rose-deep" }, "I Love You, Sayangkuuu! ❤️"),
+        /* @__PURE__ */ React.createElement("p", { className: "mt-3 font-serif text-base italic text-muted-foreground" }, FINAL_WISH)
+      )
+    ),
+    /* @__PURE__ */ React.createElement(
+      AnimatePresence,
+      null,
+      finished && /* @__PURE__ */ React.createElement(
+        motion.div,
+        {
+          ref: finalWishRef,
+          initial: { opacity: 0, y: 24 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.5 },
+          className: "card-paper mt-8 p-8 text-center"
+        },
+        [0, 1, 2].map((k) => /* @__PURE__ */ React.createElement(
+          "div",
+          {
+            key: k,
+            className: "pointer-events-none fixed balloon-rise z-20",
+            style: { left: `${15 + k * 32}%`, animationDuration: `${6 + k}s`, animationDelay: `${k * 0.6}s` }
+          },
+          /* @__PURE__ */ React.createElement(Balloon, { className: `h-28 w-14 ${k % 2 ? "text-blush" : "text-rose"}` })
+        )),
+        /* @__PURE__ */ React.createElement("div", { className: "float-deco", style: { animationDuration: "1.6s" } },
+          /* @__PURE__ */ React.createElement(Heart, { className: "mx-auto h-14 w-14 text-rose" })
+        ),
+        /* @__PURE__ */ React.createElement("h2", { className: "mt-3 font-script text-5xl text-rose-deep" }, "I Love You, Sayangkuuu! ❤️"),
+        /* @__PURE__ */ React.createElement("p", { className: "mt-4 font-script text-3xl leading-snug text-rose-deep" }, FINAL_WISH),
+        /* @__PURE__ */ React.createElement("p", { className: "mt-4 font-serif text-base text-foreground" }, "Aku sayang kamu hari ini, esok, dan selamanya, Someone! Terima kasih sudah menjadi bagian terindah dalam hidupku 💕✨"),
+        /* @__PURE__ */ React.createElement("div", { className: "mt-5 flex flex-wrap justify-center gap-2" },
+          LOVE_BADGES.map((b, i) => /* @__PURE__ */ React.createElement("span", { key: i, className: "chip" }, b))
+        ),
+        /* @__PURE__ */ React.createElement("button", { onClick: onRestart, className: "btn-soft mt-6 inline-flex items-center gap-2 cursor-pointer" }, "🎁 Ulangi Kejutan Dari Awal"),
+        /* @__PURE__ */ React.createElement("p", { className: "mt-4 text-xs text-muted-foreground" }, "geser suratnya untuk membaca ulang")
+      )
+    )
+  );
+}
+
+const FloatingHearts = React.memo(function FloatingHearts() {
+  const items = Array.from({ length: 8 }, (_, k) => k);
+  return /* @__PURE__ */ React.createElement("div", { className: "pointer-events-none fixed inset-0 overflow-hidden z-0" },
+    items.map((k) => /* @__PURE__ */ React.createElement(
+      Heart,
+      {
+        key: k,
+        className: "float-heart absolute text-blush",
+        style: { left: `${(k * 13 + 7) % 94}%`, width: 12 + (k % 3) * 6, animationDelay: `${k * 1.3}s`, animationDuration: `${11 + (k % 4) * 2}s` }
+      }
+    ))
+  );
+});
+
+function Confetti({ active }) {
+  const [show, setShow] = useState(active);
+  useEffect(() => {
+    if (!active) return;
+    setShow(true);
+    const id = setTimeout(() => setShow(false), 1400);
+    return () => clearTimeout(id);
+  }, [active]);
+  if (!show) return null;
+  return /* @__PURE__ */ React.createElement("div", { className: "pointer-events-none fixed inset-0 z-20 overflow-hidden" },
+    Array.from({ length: 16 }, (_, k) => /* @__PURE__ */ React.createElement(
+      motion.div,
+      {
+        key: k,
+        className: "absolute left-1/2 top-1/2",
+        initial: { x: 0, y: 0, opacity: 1, scale: 0.5 },
+        animate: { x: Math.round(Math.cos(k) * (120 + (k % 4) * 35)), y: Math.round(Math.sin(k) * (120 + (k % 3) * 40)), opacity: 0, scale: 1, rotate: k * 25 },
+        transition: { duration: 1.2, ease: "easeOut" }
+      },
+      /* @__PURE__ */ React.createElement(Heart, { className: `h-5 w-5 ${k % 3 ? "text-rose" : "text-gold"}` })
+    ))
+  );
+}
+
+const FloatingBears = React.memo(function FloatingBears() {
+  return /* @__PURE__ */ React.createElement("div", { className: "pointer-events-none fixed inset-0 overflow-hidden z-0" },
+    [0, 1, 2, 3].map((k) => /* @__PURE__ */ React.createElement(
+      "div",
+      {
+        key: k,
+        className: "absolute float-deco",
+        style: {
+          left: `${[6, 80, 12, 85][k]}%`,
+          top: `${[12, 20, 70, 75][k]}%`,
+          animationDuration: `${3.5 + k * 0.7}s`,
+          animationDelay: `${k * 0.4}s`
+        }
+      },
+      k % 2 ? /* @__PURE__ */ React.createElement(Bear, { className: "h-16 w-16 opacity-80" }) : /* @__PURE__ */ React.createElement(Balloon, { className: "h-20 w-10 text-blush" })
+    ))
+  );
+});
+
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(Birthday));
+
+</script>
+</body>
+</html>
