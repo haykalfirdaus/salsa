@@ -573,8 +573,8 @@ function Birthday() {
       /* @__PURE__ */ React.createElement(
         AnimatePresence,
         { mode: "wait" },
-        stage === "gift" && /* @__PURE__ */ React.createElement(GiftStage, { key: "g", onDone: () => go("quiz", true) }),
-        stage === "quiz" && /* @__PURE__ */ React.createElement(QuizStage, { key: "q", onCelebrate: () => setCelebrateId((n) => n + 1), onDone: () => go("card", true) }),
+        stage === "gift" && /* @__PURE__ */ React.createElement(GiftStage, { key: "g", onDone: () => go("quiz") }),
+        stage === "quiz" && /* @__PURE__ */ React.createElement(QuizStage, { key: "q", onCelebrate: () => setCelebrateId((n) => n + 1), onDone: () => go("card") }),
         stage === "card" && /* @__PURE__ */ React.createElement(CardStage, { key: "c", onDone: () => go("ask") }),
         stage === "ask" && /* @__PURE__ */ React.createElement(AskStage, { key: "a", onCelebrate: () => setMemoryBurstId((n) => n + 1), onDone: () => go("photos") }),
         stage === "photos" && /* @__PURE__ */ React.createElement(PhotoStage, { key: "p", onContinue: () => go("letter", true), onOpen: () => setBurst((n) => n + 1) }),
@@ -618,11 +618,11 @@ function QuizStage({ onDone, onCelebrate }) {
     if (o === BIRTHDAY_NAME) {
       pickedRef.current = true;
       setMood("happy");
-      setLine("YAYYY BENERRR!! 🥳🎂🎁💖✨");
+      setLine("YAYYY, BENER! 🥳💗");
       if (onCelebrate) onCelebrate();
       shake.start({ scale: [1, 1.08, 0.98, 1.04, 1], rotate: [0, -2, 2, -1, 0], transition: { duration: 0.65 } });
       // Let the celebration begin before moving on to the typed birthday greeting.
-      setTimeout(onDone, 2300);
+      setTimeout(onDone, 1600);
       return;
     }
     setMood("pout");
@@ -639,14 +639,15 @@ function QuizStage({ onDone, onCelebrate }) {
       ),
       /* @__PURE__ */ React.createElement("h2", { className: `mt-4 font-serif text-3xl transition-colors duration-200 ${mood === "happy" ? "text-rose-deep" : "text-foreground"}` }, line),
       mood === "happy" && /* @__PURE__ */ React.createElement(motion.div, {
-        initial: { opacity: 0, y: 12, scale: 0.7 },
+        initial: { opacity: 0, y: 8, scale: 0.92 },
         animate: { opacity: 1, y: 0, scale: 1 },
-        transition: { type: "spring", stiffness: 250, damping: 12 },
-        className: "mt-3 flex flex-wrap items-center justify-center gap-2 text-2xl"
-      }, ["🎉", "🥳", "🎂", "🎁", "💗", "✨", "🌸", "🧸", "💖", "💐", "😍", "💕"].map((emoji, i) => /* @__PURE__ */ React.createElement(motion.span, {
+        transition: { duration: 0.28, ease: "easeOut" },
+        className: "mt-3 flex items-center justify-center gap-3 text-xl",
+        "aria-hidden": "true"
+      }, ["🎉", "🎂", "💗", "✨", "🎁"].map((emoji, i) => /* @__PURE__ */ React.createElement(motion.span, {
         key: `${emoji}-${i}`,
-        animate: { y: [0, -9, 0], rotate: [0, i % 2 ? 9 : -9, 0], scale: [1, 1.12, 1] },
-        transition: { duration: 0.9 + (i % 4) * 0.15, repeat: Infinity, delay: i * 0.04 }
+        animate: { y: [0, -5, 0] },
+        transition: { duration: 0.65, repeat: 1, delay: i * 0.06 }
       }, emoji))
     )),
     /* @__PURE__ */ React.createElement("div", { className: "mt-8 grid grid-cols-2 gap-4" }, QUIZ_OPTIONS.map((o) => /* @__PURE__ */ React.createElement(
@@ -726,44 +727,33 @@ function CardStage({ onDone }) {
 
 function CorrectAnswerEffects({ active }) {
   const [visible, setVisible] = useState(active);
-  const [loveOn, setLoveOn] = useState(false);
   useEffect(() => {
     if (!active) return;
-    // Let the emoji burst lead, then send in the love shower almost immediately after.
-    const loveTimer = setTimeout(() => setLoveOn(true), 220);
-    const endTimer = setTimeout(() => setVisible(false), 6700);
-    return () => { clearTimeout(loveTimer); clearTimeout(endTimer); };
+    const endTimer = setTimeout(() => setVisible(false), 1800);
+    return () => clearTimeout(endTimer);
   }, [active]);
   if (!active || !visible) return null;
-  const emojis = ["🥳","🎉","🎂","🎁","💖","💕","💗","✨","🌸","🧸","💐","😍","💝","🎀","🌷","😘","💞","💓","⭐","🫶","💘","🍰","🎊","💟","🌈","🦋","🌼","💌","❤️","🤍","💛","🩷","🥰","🎈","🌟","🪄","🧁","💋","💐","🐻","🌹","🎀","💖","🎉","💕","✨"];
+  const emojis = ["🎉", "🎂", "💗", "🎁", "✨", "🥳", "🌸", "💕"];
   return /* @__PURE__ */ React.createElement("div", { className: "pointer-events-none fixed inset-0 z-[70] overflow-hidden", "aria-hidden": "true" },
-    /* Big happy reaction in the middle */
+    /* One clear greeting is the focus; decorations stay small and fade quickly. */
     /* @__PURE__ */ React.createElement(motion.div, {
-      initial: { opacity: 0, scale: 0.25, y: 25, rotate: -8 },
-      animate: { opacity: [0, 1, 1, 0], scale: [0.25, 1.12, 1, 0.9], y: [25, 0, -8, -28], rotate: [-8, 4, 0, 3] },
-      transition: { duration: 2.25, ease: "easeOut" },
-      className: "absolute inset-x-0 top-[38%] px-3 text-center font-script text-4xl text-rose-deep drop-shadow-lg"
-    }, "YAYYY BENER BANGETT!! 🥳💖🎂"),
-    /* A dense burst of cute celebration emojis */
+      initial: { opacity: 0, scale: 0.88, y: 12 },
+      animate: { opacity: [0, 1, 1, 0], scale: [0.88, 1.04, 1, 0.98], y: [12, 0, 0, -14] },
+      transition: { duration: 1.55, times: [0, 0.18, 0.68, 1], ease: "easeOut" },
+      className: "absolute inset-x-4 top-[37%] mx-auto w-fit max-w-[90vw] rounded-2xl border border-rose/20 bg-white/90 px-5 py-3 text-center font-script text-3xl text-rose-deep shadow-lg backdrop-blur-sm sm:text-4xl"
+    }, "YAYYY, BENER! 🥳💗"),
     emojis.map((emoji, i) => /* @__PURE__ */ React.createElement(motion.span, {
-      key: `emoji-${i}`,
+      key: `quiz-emoji-${i}`,
       className: "absolute select-none",
-      style: { left: `${(i * 37 + 3) % 97}%`, top: `${58 + ((i * 19) % 39)}%`, fontSize: `${22 + (i % 4) * 6}px` },
-      initial: { opacity: 0, scale: 0.35, y: 12, rotate: 0 },
-      animate: { opacity: [0, 1, 1, 0], scale: [0.35, 1.15, 1, 0.8], y: [12, -65 - (i % 4) * 35, -190 - (i % 7) * 35], x: [0, (i % 2 ? -1 : 1) * (22 + (i % 5) * 10), (i % 2 ? 1 : -1) * (36 + (i % 6) * 9)], rotate: [0, (i % 2 ? -1 : 1) * (20 + (i % 4) * 12), 0] },
-      transition: { duration: 2.5 + (i % 6) * 0.22, delay: (i % 12) * 0.045, ease: "easeOut" }
+      style: { left: `${12 + i * 10}%`, top: `${48 + (i % 3) * 7}%`, fontSize: i % 3 === 0 ? "25px" : "20px" },
+      initial: { opacity: 0, y: 8, scale: 0.7 },
+      animate: { opacity: [0, 0.95, 0], y: [8, -24 - (i % 3) * 9, -42], scale: [0.7, 1, 0.85] },
+      transition: { duration: 1.25, delay: 0.08 + i * 0.035, ease: "easeOut" }
     }, emoji)),
-    loveOn && Array.from({ length: 64 }, (_, i) => /* @__PURE__ */ React.createElement(Heart, {
-      key: `heart-${i}`,
-      className: `love-rain absolute ${i % 4 === 0 ? "text-rose" : i % 4 === 1 ? "text-rose-deep" : i % 4 === 2 ? "text-blush" : "text-gold"}`,
-      style: {
-        left: `${(i * 23 + 2) % 98}%`,
-        bottom: `${-30 - (i % 4) * 12}px`,
-        width: `${15 + (i % 5) * 7}px`,
-        animationDuration: `${3.2 + (i % 6) * 0.45}s`,
-        animationDelay: `${(i % 16) * 0.07}s`,
-        opacity: 0.95
-      }
+    Array.from({ length: 12 }, (_, i) => /* @__PURE__ */ React.createElement(Heart, {
+      key: `quiz-heart-${i}`,
+      className: `absolute h-4 w-4 ${i % 3 === 0 ? "text-gold" : i % 3 === 1 ? "text-blush" : "text-rose"}`,
+      style: { left: `${7 + ((i * 17) % 87)}%`, bottom: "6%", animation: `loveUp ${1.15 + (i % 3) * 0.1}s ease-out ${i * 0.025}s both`, opacity: 0.68 }
     }))
   );
 }
@@ -881,7 +871,6 @@ function PhotoStage({ onContinue, onOpen }) {
       /* @__PURE__ */ React.createElement(Bear, { className: `absolute -bottom-8 h-16 w-16 ${k % 2 ? "-left-8" : "-right-8"}` })
     )),
     /* Bottom of the photo session: the envelope waits for the user. */
-    /* @__PURE__ */ React.createElement("div", { className: "mt-10 rounded-full border border-rose/30 bg-white/75 px-5 py-3 font-script text-3xl text-rose-deep shadow-sm" }, "lanjutt yukk sayangg ♡"),
     /* @__PURE__ */ React.createElement("div", { ref: envelopeRef, className: "relative mt-10 flex flex-col items-center px-2" },
       /* @__PURE__ */ React.createElement(motion.div, { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.55 }, className: "mb-2 text-center" },
         /* @__PURE__ */ React.createElement("p", { className: "font-script text-4xl text-rose-deep" }, "Ada surat buat kamu 💌"),
@@ -1259,18 +1248,27 @@ function MemoryLoveEffects({ active }) {
   const [visible, setVisible] = useState(active);
   useEffect(() => {
     if (!active) return;
-    const timer = setTimeout(() => setVisible(false), 5200);
+    const timer = setTimeout(() => setVisible(false), 1750);
     return () => clearTimeout(timer);
   }, [active]);
   if (!active || !visible) return null;
-  const emojis = ["💗","💖","💕","💘","💝","💞","❤️","🩷","🥰","😍","😘","🫶","🎀","🌸","✨","💐","🧸","🌷","💓","💟","💋","🎉","💗","💖","💕","💘","💝","💞","❤️","🩷","🥰","✨","🌹","💌","🦋","💐","💗","💖","💕","💘","🎀","🌸","🫶","💓","💟","✨","❤️","💝"];
+  const hearts = ["💗", "💕", "💖", "✨", "💘", "🌸", "💝", "💗", "🎀", "💕", "✨", "💖", "🌷", "💗"];
   return /* @__PURE__ */ React.createElement("div", { className: "pointer-events-none fixed inset-0 z-[75] overflow-hidden", "aria-hidden": "true" },
-    /* Big celebratory message above the button */
-    /* @__PURE__ */ React.createElement(motion.div, { className: "absolute inset-x-2 top-[37%] text-center font-script text-4xl sm:text-5xl text-rose-deep drop-shadow-lg", initial: { opacity: 0, scale: 0.25, y: 28, rotate: -10 }, animate: { opacity: [0, 1, 1, 0], scale: [0.25, 1.12, 1, 0.9], y: [28, 0, -12, -65], rotate: [-10, 5, 0, 4] }, transition: { duration: 2.3, ease: "easeOut" } }, "KENANGAN KITA YUKK!! 💖🥹✨"),
-    /* Hearts burst radially from the middle of the screen */
-    Array.from({ length: 42 }, (_, i) => /* @__PURE__ */ React.createElement(motion.span, { key: `burst-${i}`, className: "absolute left-1/2 top-1/2 select-none", style: { fontSize: `${20 + (i % 5) * 7}px`, marginLeft: -14, marginTop: -14 }, initial: { opacity: 0, scale: 0.25, x: 0, y: 0, rotate: 0 }, animate: { opacity: [0, 1, 1, 0], scale: [0.25, 1.2, 1, 0.7], x: Math.cos(i * (Math.PI * 2 / 42)) * (120 + (i % 4) * 44), y: Math.sin(i * (Math.PI * 2 / 42)) * (145 + (i % 6) * 34), rotate: (i % 2 ? -1 : 1) * (45 + i * 7) }, transition: { duration: 1.9 + (i % 5) * 0.16, delay: (i % 9) * 0.025, ease: "easeOut" } }, emojis[i])),
-    /* Extra dense wave of hearts floating up across the whole viewport */
-    Array.from({ length: 88 }, (_, i) => /* @__PURE__ */ React.createElement(motion.span, { key: `rain-${i}`, className: "absolute bottom-[-42px] select-none", style: { left: `${(i * 29 + 1) % 99}%`, fontSize: `${15 + (i % 6) * 5}px` }, initial: { opacity: 0, y: 0, x: 0, rotate: 0 }, animate: { opacity: [0, 0.98, 0.9, 0], y: -window.innerHeight - 120 - (i % 5) * 35, x: (i % 2 ? -1 : 1) * (18 + (i % 7) * 12), rotate: (i % 2 ? -1 : 1) * (35 + (i % 5) * 14) }, transition: { duration: 2.8 + (i % 8) * 0.28, delay: (i % 18) * 0.055, ease: "easeOut" } }, ["💗","💖","💕","💘","💝","💞","❤️","🩷","✨","🌸","🎀"][i % 11]))
+    /* Keep the transition message readable and let the photos remain the main event. */
+    /* @__PURE__ */ React.createElement(motion.div, {
+      className: "absolute inset-x-4 top-[22%] mx-auto w-fit max-w-[88vw] rounded-2xl border border-rose/20 bg-white/90 px-5 py-3 text-center font-script text-3xl text-rose-deep shadow-lg backdrop-blur-sm sm:text-4xl",
+      initial: { opacity: 0, scale: 0.9, y: 14 },
+      animate: { opacity: [0, 1, 1, 0], scale: [0.9, 1.03, 1, 0.98], y: [14, 0, 0, -12] },
+      transition: { duration: 1.5, times: [0, 0.18, 0.72, 1], ease: "easeOut" }
+    }, "Kenangan kita, yuk! 💗"),
+    hearts.map((emoji, i) => /* @__PURE__ */ React.createElement(motion.span, {
+      key: `memory-heart-${i}`,
+      className: "absolute select-none",
+      style: { left: `${5 + ((i * 31) % 90)}%`, top: `${43 + (i % 4) * 9}%`, fontSize: `${17 + (i % 3) * 4}px` },
+      initial: { opacity: 0, y: 10, scale: 0.75, rotate: 0 },
+      animate: { opacity: [0, 0.88, 0], y: [10, -22 - (i % 4) * 8, -44], x: [0, (i % 2 ? -1 : 1) * (8 + (i % 3) * 5)], scale: [0.75, 1, 0.85], rotate: [0, i % 2 ? -12 : 12, 0] },
+      transition: { duration: 1.15, delay: 0.04 + i * 0.018, ease: "easeOut" }
+    }, emoji))
   );
 }
 
