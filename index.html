@@ -304,69 +304,140 @@
 <script>
 const { useEffect, useRef, useState } = React;
 const { AnimatePresence, motion, useAnimation } = Motion;
-const BIRTHDAY_NAME = "Someone";
-const QUIZ_OPTIONS = ["Kucing Tetangga", "Someone", "Aku Sendiri", "Pak RT"];
-const WRONG_LINES = [
-  "Ihh kok salahh...",
-  "Masa lupa sihh, gemesh!",
-  "Coba lagi dong, hmph",
-  "Salah wlee, mikir lagi yaa",
-  "Aduhhh, masa pacar sendiri dilupain sih? 🥺",
-  "Coba tebak lagi, hadiahnya peluk virtual! 🧸",
-  "Belum benerrr, ayoo sayang bisaaa 💗",
-  "Eits bukan itu jawabannya, coba lagiii ✨",
-  "Hmmm... jawabanmu bikin aku manyun nih 😚",
-  "Salahh, tapi tetep gemes kok sama kamu 💞",
-  "Clue: orangnya lagi bikin web ini buat kamu! 🎀",
-  "Dikit lagi nihh, jangan nyerah sayang 🌷"
-];
-const TEMPLATES = {
-  Romantis: "Selamat ulang tahun, Someone. Siapa sangka, sosok yang dulu kukenal dalam kepolosan masa SD, kini kembali dipertemukan semesta di masa SMA untuk menjadi alasan terindah di setiap detak jantungku. Semoga harimu sehangat tatapan kita saat pertama kali bertemu kembali.",
-  Lucu: "Selamat bertambah usia, Someone! Dari zaman masih polos pakai seragam putih merah di SD sampai sekarang ketemu lagi pakai putih abu-abu di SMA, kenapa kamu makin hari makin bikin aku jatuh hati terus sih?",
-  Puitis: "Di antara ribuan langkah yang sempat terpisah selepas masa kecil kita, takdir menuntunku kembali padamu di bangku SMA. Selamat ulang tahun, Someone—kamu adalah rindu masa lalu yang menjelma menjadi masa depanku.",
-  Singkat: "Selamat ulang tahun, Someone. Dari kenangan masa SD hingga takdir indah di masa SMA, hatiku selalu memilihmu."
+/* =====================================================================
+   💗 PENGATURAN WEBSITE — EDIT TEKS DAN TANGGAL DI BAGIAN INI SAJA
+   1) Tanggal kunci: format YYYY-MM-DDTHH:mm:ss+08:00 (WITA / Mataram).
+      Contoh: "2026-10-24T00:00:00+08:00" = 24 Oktober 2026 pukul 00.00 WITA.
+   2) Ganti nama "Someone" dengan nama yang kamu mau.
+   3) Ubah kalimat di bawah sesuai pesan pribadimu. Teks {nama} otomatis
+      diganti mengikuti nilai birthdayName.
+===================================================================== */
+const EDITABLE_TEXT = {
+  // >>> TANGGAL DAN PESAN HALAMAN PENGUNCI — EDIT DI SINI <<<
+  unlockAt: "2026-10-24T00:00:00+08:00",
+  lockTitle: "Kejutan kecil buat kamu 💌",
+  lockMessage: "Belum waktunya dibuka, sayang. Ada sesuatu yang spesial menunggumu 💗",
+  lockNote: "Balik lagi tepat waktu yaa, aku tunggu di sini ✨",
+
+  // >>> NAMA ORANG YANG ULANG TAHUN — EDIT DI SINI <<<
+  birthdayName: "Someone",
+
+  // >>> TEKS UTAMA WEBSITE — EDIT DI SINI <<<
+  giftEyebrow: "ada kejutan kecil",
+  giftTitle: "Untukmu",
+  giftTapHint: "Ketuk kadonya untuk membuka",
+  quizPrompt: "Hayoo, siapa yang lagi ultah yaa? 🎂💗",
+  askTitle: "Mau lanjut liat kenangan kitaa? 💗",
+  askYes: "Lanjut lihat kenangan kita 💗",
+  askNo: "Nggak",
+  photoTitle: "kenangan kita",
+  photoSubtitle: "Scroll pelan-pelan yaa",
+  envelopeTitle: "Ada surat buat kamu 💌",
+  envelopeClosedHint: "Tekan amplopnya buat buka yaa, sayang",
+  envelopeOpenedHint: "Surat kecil khusus buat sayang 💗",
+  envelopePreview: "I ❤️ U, {nama}",
+  shortLetterTitle: "I Love You, Sayangkuuu! ❤️",
+  shortLetterBody: "Aku sayang kamu hari ini, esok, dan selamanya, {nama}! Terima kasih sudah menjadi bagian terindah dalam hidupku 💕✨",
+  continueButton: "Lanjut sayang 💗",
+  longLetterEndingTitle: "I Love You, Sayangkuuu! ❤️",
+
+  // >>> UCAPAN YANG DIKETIK OTOMATIS — EDIT DI SINI <<<
+  romanticGreeting: "Selamat ulang tahun, {nama}. Siapa sangka, sosok yang dulu kukenal dalam kepolosan masa SD, kini kembali dipertemukan semesta di masa SMA untuk menjadi alasan terindah di setiap detak jantungku. Semoga harimu sehangat tatapan kita saat pertama kali bertemu kembali.",
+  funnyGreeting: "Selamat bertambah usia, {nama}! Dari zaman masih polos pakai seragam putih merah di SD sampai sekarang ketemu lagi pakai putih abu-abu di SMA, kenapa kamu makin hari makin bikin aku jatuh hati terus sih?",
+  poeticGreeting: "Di antara ribuan langkah yang sempat terpisah selepas masa kecil kita, takdir menuntunku kembali padamu di bangku SMA. Selamat ulang tahun, {nama}—kamu adalah rindu masa lalu yang menjelma menjadi masa depanku.",
+  shortGreeting: "Selamat ulang tahun, {nama}. Dari kenangan masa SD hingga takdir indah di masa SMA, hatiku selalu memilihmu.",
+  finalWish: "Selamat ulang tahun, {nama} tersayang. Semoga panjang umur, sehat selalu, makin bahagia, dan semua mimpimu tercapai. Dari masa SD hingga kita bertemu lagi di SMA ini, aku akan selalu di sini untukmu.",
+
+  // >>> ISI SURAT PANJANG — EDIT PARAGRAF DI DALAM DAFTAR INI <<<
+  longLetter: [
+    "Untukmu, {nama}, yang hari ini merayakan indahnya hari kelahiran.",
+    "Jika aku menoleh ke belakang, rasanya begitu ajaib melihat bagaimana semesta merangkai kisah kita. Semuanya bermula dari kenangan sederhana di masa SD—saat kita masih berlarian dengan seragam putih merah, berbagi tawa polos tanpa tahu bahwa kelak, namamu akan menjadi nama yang paling berarti di dalam hidupku.",
+    "Waktu sempat membawa kita berjalan di persimpangan yang berbeda. Tahun-tahun berlalu, musim berganti, dan kita tumbuh dewasa dengan cerita masing-masing. Namun ternyata, benang takdir yang terikat sejak masa kecil itu tidak pernah benar-benar putus.",
+    "Hingga akhirnya, di bawah langit masa SMA dengan seragam putih abu-abu, semesta kembali mempertemukan kita. Saat mataku kembali menangkap sosokmu dan melihat senyummu lagi setelah sekian lama, ada debar hangat yang seketika menyadarkanku: ternyata sejauh apa pun langkah kita sempat berjarak, hatiku tetap mengenali rumahnya.",
+    "Pertemuan kembali di masa SMA ini bukan sekadar kebetulan bagiku, melainkan cara Tuhan menjawab rindu yang bahkan dulu belum sempat kupahami namanya. Mengenalmu di masa kecil adalah sebuah keberuntungan, namun dipertemukan kembali denganmu saat remaja adalah keajaiban yang paling kusyukuri.",
+    "{nama}, terima kasih karena tetap memiliki tatapan dan senyuman yang menenangkan seperti dulu, namun dengan kehadiran yang kini jauh lebih menghangatkan hatiku. Bersamamu, setiap sudut sekolah, setiap obrolan ringan, dan setiap senja yang kita lewati terasa begitu istimewa.",
+    "Di hari ulang tahunmu ini, aku berdoa semoga langkahmu selalu dipeluk oleh kebahagiaan. Semoga setiap mimpi yang sedang kamu perjuangkan di masa putih abu-abu ini satu per satu menemukan jalannya untuk terwujud, dan semoga tidak ada hal apa pun yang memudarkan senyum indahmu.",
+    "Terima kasih sudah kembali ke dalam cerita hidupku dan menjadi tempat ternyaman untuk hatiku berlabuh. Selamat ulang tahun, {nama}. Aku menyayangimu—dari kenangan masa lalu, di setiap detik hari ini, hingga ribuan hari esok yang akan kita tempuh bersama."
+  ],
+
+  // >>> PILIHAN KUIS, PESAN SALAH, DAN PESAN MANIS — EDIT DI SINI <<<
+  quizOptions: ["Kucing Tetangga", "{nama}", "Aku Sendiri", "Pak RT"],
+  wrongLines: [
+    "Ihh kok salahh...",
+    "Masa lupa sihh, gemesh!",
+    "Coba lagi dong, hmph",
+    "Salah wlee, mikir lagi yaa",
+    "Aduhhh, masa pacar sendiri dilupain sih? 🥺",
+    "Coba tebak lagi, hadiahnya peluk virtual! 🧸",
+    "Belum benerrr, ayoo sayang bisaaa 💗",
+    "Eits bukan itu jawabannya, coba lagiii ✨",
+    "Hmmm... jawabanmu bikin aku manyun nih 😚",
+    "Salahh, tapi tetep gemes kok sama kamu 💞",
+    "Clue: orangnya lagi bikin web ini buat kamu! 🎀",
+    "Dikit lagi nihh, jangan nyerah sayang 🌷"
+  ],
+  sweetWords: [
+    "Dulu di bangku SD kita hanya sebatas cerita kecil, tapi di masa SMA ini kamu adalah seluruh isi doaku, {nama}.",
+    "Semesta sempat menjauhkan langkah kita, hanya agar aku tahu betapa berharganya saat kita dipertemukan kembali di SMA.",
+    "Dari tawa polos masa kecil hingga debar hangat masa remaja, hatiku ternyata selalu mencari jalan pulang menuju kamu.",
+    "Terima kasih telah hadir kembali di hidupku, {nama}. Mengenalmu dua kali adalah anugerah terindah dalam takdirku."
+  ],
+
+  // >>> SUMBER FOTO DAN CAPTION — EDIT DI SINI <<<
+  photoUrls: [
+    "http://hbdsalsa.my.id/foto1",
+    "http://hbdsalsa.my.id/foto2",
+    "http://hbdsalsa.my.id/foto3",
+    "http://hbdsalsa.my.id/foto4",
+    "http://hbdsalsa.my.id/foto5"
+  ],
+  photoCaptions: [
+    "Kenangan manis sejak masa putih merah hingga kita bertemu lagi",
+    "Takdir SMA yang mempertemukan aku kembali denganmu, {nama}",
+    "Seikat rindu yang tumbuh sejak dulu, kini mekar untukmu",
+    "Bersamamu, setiap detik terasa seperti keajaiban yang nyata",
+    "Bersamamu, setiap detik terasa seperti keajaiban yang nyata"
+  ],
+  photoRotations: [-4, 3, -2, 4, 4],
+
+  // >>> STIKER TEKS — EDIT DI SINI <<<
+  loveMessages: [
+    "I Love You, Sayangkuuu! ❤️",
+    "Aku sayang banget sama kamu, {nama}! Lebih dari kata-kata yang bisa kuucapkan 💕",
+    "Terima kasih sudah hadir di masa kecilku dan kembali menjadi cinta terindah di masa SMA-ku ✨",
+    "I love you 3000, sayangku, cintaku, rumah ternyamanku, dan masa depanku! 🥰💖"
+  ],
+  loveBadges: [
+    "I Love You Sayangkuuu ❤️",
+    "Sayang Kamu Banyak-Banyak 💕",
+    "My Favorite Person 🥰",
+    "Takdir Terindahku ✨",
+    "Forever & Always 💍",
+    "Peluk Hangat Untukmu 🤗",
+    "Cintaku Selamanya 🌸"
+  ]
 };
-const SWEET_WORDS = [
-  "Dulu di bangku SD kita hanya sebatas cerita kecil, tapi di masa SMA ini kamu adalah seluruh isi doaku, Someone.",
-  "Semesta sempat menjauhkan langkah kita, hanya agar aku tahu betapa berharganya saat kita dipertemukan kembali di SMA.",
-  "Dari tawa polos masa kecil hingga debar hangat masa remaja, hatiku ternyata selalu mencari jalan pulang menuju kamu.",
-  "Terima kasih telah hadir kembali di hidupku, Someone. Mengenalmu dua kali adalah anugerah terindah dalam takdirku."
-];
-const MEMORIES = [
-  { src: "http://hbdsalsa.my.id/foto1", caption: "Kenangan manis sejak masa putih merah hingga kita bertemu lagi", rot: -4 },
-  { src: "http://hbdsalsa.my.id/foto2", caption: "Takdir SMA yang mempertemukan aku kembali denganmu, Someone", rot: 3 },
-  { src: "http://hbdsalsa.my.id/foto3", caption: "Seikat rindu yang tumbuh sejak dulu, kini mekar untukmu", rot: -2 },
-  { src: "http://hbdsalsa.my.id/foto4", caption: "Bersamamu, setiap detik terasa seperti keajaiban yang nyata", rot: 4 },
-  { src: "http://hbdsalsa.my.id/foto5", caption: "Bersamamu, setiap detik terasa seperti keajaiban yang nyata", rot: 4 }
-];
-const LONG_LETTER = [
-  "Untukmu, Someone, yang hari ini merayakan indahnya hari kelahiran.",
-  "Jika aku menoleh ke belakang, rasanya begitu ajaib melihat bagaimana semesta merangkai kisah kita. Semuanya bermula dari kenangan sederhana di masa SD—saat kita masih berlarian dengan seragam putih merah, berbagi tawa polos tanpa tahu bahwa kelak, namamu akan menjadi nama yang paling berarti di dalam hidupku.",
-  "Waktu sempat membawa kita berjalan di persimpangan yang berbeda. Tahun-tahun berlalu, musim berganti, dan kita tumbuh dewasa dengan cerita masing-masing. Namun ternyata, benang takdir yang terikat sejak masa kecil itu tidak pernah benar-benar putus.",
-  "Hingga akhirnya, di bawah langit masa SMA dengan seragam putih abu-abu, semesta kembali mempertemukan kita. Saat mataku kembali menangkap sosokmu dan melihat senyummu lagi setelah sekian lama, ada debar hangat yang seketika menyadarkanku: ternyata sejauh apa pun langkah kita sempat berjarak, hatiku tetap mengenali rumahnya.",
-  "Pertemuan kembali di masa SMA ini bukan sekadar kebetulan bagiku, melainkan cara Tuhan menjawab rindu yang bahkan dulu belum sempat kupahami namanya. Mengenalmu di masa kecil adalah sebuah keberuntungan, namun dipertemukan kembali denganmu saat remaja adalah keajaiban yang paling kusyukuri.",
-  "Someone, terima kasih karena tetap memiliki tatapan dan senyuman yang menenangkan seperti dulu, namun dengan kehadiran yang kini jauh lebih menghangatkan hatiku. Bersamamu, setiap sudut sekolah, setiap obrolan ringan, dan setiap senja yang kita lewati terasa begitu istimewa.",
-  "Di hari ulang tahunmu ini, aku berdoa semoga langkahmu selalu dipeluk oleh kebahagiaan. Semoga setiap mimpi yang sedang kamu perjuangkan di masa putih abu-abu ini satu per satu menemukan jalannya untuk terwujud, dan semoga tidak ada hal apa pun yang memudarkan senyum indahmu.",
-  "Terima kasih sudah kembali ke dalam cerita hidupku dan menjadi tempat ternyaman untuk hatiku berlabuh. Selamat ulang tahun, Someone. Aku menyayangimu—dari kenangan masa lalu, di setiap detik hari ini, hingga ribuan hari esok yang akan kita tempuh bersama."
-];
-const FINAL_WISH = "Selamat ulang tahun, Someone tersayang. Semoga panjang umur, sehat selalu, makin bahagia, dan semua mimpimu tercapai. Dari masa SD hingga kita bertemu lagi di SMA ini, aku akan selalu di sini untukmu.";
 
-const LOVE_MESSAGES = [
-  "I Love You, Sayangkuuu! ❤️",
-  "Aku sayang banget sama kamu, Someone! Lebih dari kata-kata yang bisa kuucapkan 💕",
-  "Terima kasih sudah hadir di masa kecilku dan kembali menjadi cinta terindah di masa SMA-ku ✨",
-  "I love you 3000, sayangku, cintaku, rumah ternyamanku, dan masa depanku! 🥰💖"
-];
-
-const LOVE_BADGES = [
-  "I Love You Sayangkuuu ❤️",
-  "Sayang Kamu Banyak-Banyak 💕",
-  "My Favorite Person 🥰",
-  "Takdir Terindahku ✨",
-  "Forever & Always 💍",
-  "Peluk Hangat Untukmu 🤗",
-  "Cintaku Selamanya 🌸"
-];
+const fillName = (text) => String(text).replaceAll("{nama}", EDITABLE_TEXT.birthdayName);
+const BIRTHDAY_NAME = EDITABLE_TEXT.birthdayName;
+const QUIZ_OPTIONS = EDITABLE_TEXT.quizOptions.map(fillName);
+const WRONG_LINES = EDITABLE_TEXT.wrongLines.map(fillName);
+const TEMPLATES = {
+  Romantis: fillName(EDITABLE_TEXT.romanticGreeting),
+  Lucu: fillName(EDITABLE_TEXT.funnyGreeting),
+  Puitis: fillName(EDITABLE_TEXT.poeticGreeting),
+  Singkat: fillName(EDITABLE_TEXT.shortGreeting)
+};
+const SWEET_WORDS = EDITABLE_TEXT.sweetWords.map(fillName);
+const MEMORIES = EDITABLE_TEXT.photoUrls.map((src, i) => ({
+  src,
+  caption: fillName(EDITABLE_TEXT.photoCaptions[i] || ""),
+  rot: EDITABLE_TEXT.photoRotations[i] ?? 0
+}));
+const LONG_LETTER = EDITABLE_TEXT.longLetter.map(fillName);
+const FINAL_WISH = fillName(EDITABLE_TEXT.finalWish);
+const LOVE_MESSAGES = EDITABLE_TEXT.loveMessages.map(fillName);
+const LOVE_BADGES = EDITABLE_TEXT.loveBadges.map(fillName);
 
 const Heart = React.memo(function Heart({ className = "", style }) {
   return /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 32 29", className, style, fill: "currentColor" }, /* @__PURE__ */ React.createElement("path", { d: "M16 29 2.7 15.6A8.2 8.2 0 0 1 16 4.5a8.2 8.2 0 0 1 13.3 11.1Z" }));
@@ -443,7 +514,7 @@ const EnvelopeSvg = React.memo(function EnvelopeSvg({ flapOpen, paperUp }) {
         fontWeight: "bold",
         fontFamily: "Playfair Display, serif"
       },
-      "I ❤️ U, Someone"
+      fillName(EDITABLE_TEXT.envelopePreview)
     ),
     /* Garis hiasan surat */
     /* @__PURE__ */ React.createElement("line", { x1: "58", y1: "145", x2: "182", y2: "145", stroke: "var(--blush)", strokeWidth: "2.5", strokeLinecap: "round" }),
@@ -522,7 +593,58 @@ const page = {
   exit: { opacity: 0, y: -24, scale: 0.98, transition: { duration: 0.25, ease: "easeIn" } }
 };
 
+function LockedScreen({ now }) {
+  const target = new Date(EDITABLE_TEXT.unlockAt);
+  const remaining = Math.max(0, target.getTime() - now);
+  const days = Math.floor(remaining / 86400000);
+  const hours = Math.floor((remaining % 86400000) / 3600000);
+  const minutes = Math.floor((remaining % 3600000) / 60000);
+  const seconds = Math.floor((remaining % 60000) / 1000);
+  const unlockDate = new Intl.DateTimeFormat("id-ID", {
+    day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Makassar"
+  }).format(target);
+  const unlockTime = new Intl.DateTimeFormat("id-ID", {
+    hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Asia/Makassar"
+  }).format(target);
+  const units = [
+    [String(days).padStart(2, "0"), "hari"],
+    [String(hours).padStart(2, "0"), "jam"],
+    [String(minutes).padStart(2, "0"), "menit"],
+    [String(seconds).padStart(2, "0"), "detik"]
+  ];
+  return React.createElement("main", {
+    className: "relative flex min-h-screen items-center justify-center overflow-hidden bg-flow px-5 py-10 font-body text-foreground"
+  },
+    React.createElement("div", { className: "pointer-events-none absolute inset-0 overflow-hidden", "aria-hidden": "true" },
+      React.createElement("span", { className: "absolute left-[9%] top-[13%] text-4xl opacity-70 animate-bounce" }, "💗"),
+      React.createElement("span", { className: "absolute right-[10%] top-[22%] text-3xl opacity-70 float-deco" }, "🎀"),
+      React.createElement("span", { className: "absolute bottom-[16%] left-[14%] text-3xl opacity-70 float-deco" }, "✨"),
+      React.createElement("span", { className: "absolute bottom-[12%] right-[12%] text-4xl opacity-70 animate-pulse" }, "💕")
+    ),
+    React.createElement("section", { className: "relative z-10 w-full max-w-md rounded-[2rem] border border-white/70 bg-white/85 p-7 text-center shadow-xl backdrop-blur-sm sm:p-9" },
+      React.createElement("div", { className: "mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-rose-100 text-4xl shadow-inner" }, "🔒"),
+      React.createElement("p", { className: "font-serif text-xs uppercase tracking-[0.28em] text-rose-deep" }, "a little surprise is waiting"),
+      React.createElement("h1", { className: "mt-3 font-script text-5xl leading-tight text-rose-deep" }, EDITABLE_TEXT.lockTitle),
+      React.createElement("p", { className: "mt-4 text-sm leading-relaxed text-rose-deep/90" }, EDITABLE_TEXT.lockMessage),
+      React.createElement("div", { className: "mt-7 grid grid-cols-4 gap-2" }, units.map(([value, label]) =>
+        React.createElement("div", { key: label, className: "rounded-2xl border border-rose-100 bg-rose-50/90 px-1 py-3" },
+          React.createElement("div", { className: "font-serif text-2xl font-semibold tabular-nums text-rose-deep" }, value),
+          React.createElement("div", { className: "mt-1 text-[10px] uppercase tracking-wider text-rose-deep/70" }, label)
+        )
+      )),
+      React.createElement("p", { className: "mt-5 text-sm font-semibold text-rose-deep" }, `Terbuka ${unlockDate} · ${unlockTime} WITA`),
+      React.createElement("p", { className: "mt-3 text-xs leading-relaxed text-rose-deep/70" }, EDITABLE_TEXT.lockNote),
+      React.createElement("div", { className: "mt-5 text-xl", "aria-hidden": "true" }, "♡  ✧  ♡  ✧  ♡")
+    )
+  );
+}
+
 function Birthday() {
+  const [clockNow, setClockNow] = useState(Date.now());
+  useEffect(() => {
+    const ticker = setInterval(() => setClockNow(Date.now()), 1000);
+    return () => clearInterval(ticker);
+  }, []);
   useEffect(() => {
     const tap = (event) => {
       const target = event.target && event.target.closest && event.target.closest('button,[role="button"],input[type="range"]');
@@ -549,6 +671,8 @@ function Birthday() {
     setStage("gift");
     window.scrollTo({ top: 0, behavior: "instant" });
   };
+  const unlockTimestamp = new Date(EDITABLE_TEXT.unlockAt).getTime();
+  if (Number.isFinite(unlockTimestamp) && clockNow < unlockTimestamp) return React.createElement(LockedScreen, { now: clockNow });
   return /* @__PURE__ */ React.createElement(
     "main",
     { className: "relative min-h-screen overflow-x-hidden bg-flow font-body text-foreground" },
@@ -586,7 +710,7 @@ function Birthday() {
 
 function GiftStage({ onDone }) {
   const [open, setOpen] = useState(false);
-  return /* @__PURE__ */ React.createElement(motion.section, { ...page, className: "flex flex-col items-center text-center" }, /* @__PURE__ */ React.createElement("p", { className: "font-serif text-sm uppercase tracking-[0.4em] text-rose-deep" }, "ada kejutan kecil"), /* @__PURE__ */ React.createElement("h1", { className: "mt-3 font-script text-6xl text-rose-deep" }, "Untukmu"), /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement(motion.section, { ...page, className: "flex flex-col items-center text-center" }, /* @__PURE__ */ React.createElement("p", { className: "font-serif text-sm uppercase tracking-[0.4em] text-rose-deep" }, EDITABLE_TEXT.giftEyebrow), /* @__PURE__ */ React.createElement("h1", { className: "mt-3 font-script text-6xl text-rose-deep" }, EDITABLE_TEXT.giftTitle), /* @__PURE__ */ React.createElement(
     motion.button,
     {
       "aria-label": "Buka kado",
@@ -603,12 +727,12 @@ function GiftStage({ onDone }) {
       }
     },
     /* @__PURE__ */ React.createElement(GiftBox, { open })
-  ), /* @__PURE__ */ React.createElement("p", { className: "mt-4 animate-pulse text-muted-foreground" }, "Ketuk kadonya untuk membuka"));
+  ), /* @__PURE__ */ React.createElement("p", { className: "mt-4 animate-pulse text-muted-foreground" }, EDITABLE_TEXT.giftTapHint));
 }
 
 function QuizStage({ onDone, onCelebrate }) {
   const [mood, setMood] = useState("idle");
-  const [line, setLine] = useState("Hayoo, siapa yang lagi ultah yaa? 🎂💗");
+  const [line, setLine] = useState(EDITABLE_TEXT.quizPrompt);
   const [offsets, setOffsets] = useState({});
   const shake = useAnimation();
   const pickedRef = useRef(false);
@@ -767,10 +891,10 @@ function AskStage({ onDone, onCelebrate }) {
   };
   return /* @__PURE__ */ React.createElement(motion.section, { ...page, className: "text-center" },
     /* @__PURE__ */ React.createElement("div", { className: "float-deco", style: { animationDuration: "2.4s" } }, /* @__PURE__ */ React.createElement(Bear, { className: "mx-auto h-28 w-28", mood: "happy" })),
-    /* @__PURE__ */ React.createElement("h2", { className: "mt-6 font-serif text-3xl" }, "Mau lanjut liat kenangan kitaa? 💗"),
+    /* @__PURE__ */ React.createElement("h2", { className: "mt-6 font-serif text-3xl" }, EDITABLE_TEXT.askTitle),
     /* @__PURE__ */ React.createElement("div", { className: "mt-8 flex items-center justify-center gap-4 flex-wrap" },
-      /* @__PURE__ */ React.createElement(motion.button, { onClick: continueToMemories, disabled: leaving, whileTap: { scale: 0.92 }, animate: leaving ? { scale: [1, 1.08, 0.98, 1.04], boxShadow: ["0 8px 18px -6px var(--rose)", "0 0 38px rgba(244, 81, 139, .85)", "0 8px 18px -6px var(--rose)"] } : { scale: [1, 1.035, 1], boxShadow: ["0 8px 18px -6px var(--rose)", "0 8px 24px -4px rgba(244, 81, 139, .65)", "0 8px 18px -6px var(--rose)"] }, transition: { duration: leaving ? 0.7 : 1.8, repeat: leaving ? 0 : Infinity }, className: "btn-primary relative overflow-hidden", style: { position: "relative", zIndex: 2 } }, leaving ? "YUKKK 💖✨" : "Lanjut lihat kenangan kita 💗"),
-      /* @__PURE__ */ React.createElement(motion.button, { animate: pos, transition: { type: "tween", duration: 0.18 }, onMouseEnter: flee, onTouchStart: flee, onClick: flee, className: "btn-soft" }, "Nggak")
+      /* @__PURE__ */ React.createElement(motion.button, { onClick: continueToMemories, disabled: leaving, whileTap: { scale: 0.92 }, animate: leaving ? { scale: [1, 1.08, 0.98, 1.04], boxShadow: ["0 8px 18px -6px var(--rose)", "0 0 38px rgba(244, 81, 139, .85)", "0 8px 18px -6px var(--rose)"] } : { scale: [1, 1.035, 1], boxShadow: ["0 8px 18px -6px var(--rose)", "0 8px 24px -4px rgba(244, 81, 139, .65)", "0 8px 18px -6px var(--rose)"] }, transition: { duration: leaving ? 0.7 : 1.8, repeat: leaving ? 0 : Infinity }, className: "btn-primary relative overflow-hidden", style: { position: "relative", zIndex: 2 } }, leaving ? "YUKKK 💖✨" : EDITABLE_TEXT.askYes),
+      /* @__PURE__ */ React.createElement(motion.button, { animate: pos, transition: { type: "tween", duration: 0.18 }, onMouseEnter: flee, onTouchStart: flee, onClick: flee, className: "btn-soft" }, EDITABLE_TEXT.askNo)
     )
   );
 }
@@ -846,8 +970,8 @@ function PhotoStage({ onContinue, onOpen }) {
   return /* @__PURE__ */ React.createElement(
     motion.section,
     { ...page, className: "w-full text-center pb-16" },
-    /* @__PURE__ */ React.createElement("p", { className: "font-serif text-xs uppercase tracking-[0.4em] text-rose-deep" }, "kenangan kita"),
-    /* @__PURE__ */ React.createElement("h2", { className: "mt-2 font-script text-5xl text-rose-deep" }, "Scroll pelan-pelan yaa"),
+    /* @__PURE__ */ React.createElement("p", { className: "font-serif text-xs uppercase tracking-[0.4em] text-rose-deep" }, EDITABLE_TEXT.photoTitle),
+    /* @__PURE__ */ React.createElement("h2", { className: "mt-2 font-script text-5xl text-rose-deep" }, EDITABLE_TEXT.photoSubtitle),
     /* @__PURE__ */ React.createElement("div", { className: "mt-4 flex justify-center float-deco", style: { animationDuration: "2.5s" } }, /* @__PURE__ */ React.createElement(Bear, { className: "h-20 w-20" })),
     /* @__PURE__ */ React.createElement("div", { className: "h-[15vh]" }),
     MEMORIES.map((m, k) => /* @__PURE__ */ React.createElement(
@@ -867,8 +991,8 @@ function PhotoStage({ onContinue, onOpen }) {
     /* Bottom of the photo session: the envelope waits for the user. */
     /* @__PURE__ */ React.createElement("div", { ref: envelopeRef, className: "relative mt-10 flex flex-col items-center px-2" },
       /* @__PURE__ */ React.createElement(motion.div, { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.55 }, className: "mb-2 text-center" },
-        /* @__PURE__ */ React.createElement("p", { className: "font-script text-4xl text-rose-deep" }, "Ada surat buat kamu 💌"),
-        /* @__PURE__ */ React.createElement("p", { className: "mt-1 text-sm text-rose-deep/80" }, wishVisible ? "Surat kecil khusus buat sayang 💗" : "Tekan amplopnya buat buka yaa, sayang")
+        /* @__PURE__ */ React.createElement("p", { className: "font-script text-4xl text-rose-deep" }, EDITABLE_TEXT.envelopeTitle),
+        /* @__PURE__ */ React.createElement("p", { className: "mt-1 text-sm text-rose-deep/80" }, wishVisible ? EDITABLE_TEXT.envelopeOpenedHint : EDITABLE_TEXT.envelopeClosedHint)
       ),
       /* Interactive envelope: its flap flips and the letter slides out on tap. */
       /* @__PURE__ */ React.createElement(motion.button, {
@@ -897,9 +1021,9 @@ function PhotoStage({ onContinue, onOpen }) {
           /* @__PURE__ */ React.createElement(Flower, { className: "absolute -left-4 -top-4 h-12 w-12 animate-spin-slow" }),
           /* @__PURE__ */ React.createElement(Flower, { className: "absolute -bottom-4 -right-4 h-12 w-12 animate-spin-slow" }),
           /* @__PURE__ */ React.createElement("div", { className: "float-deco" }, /* @__PURE__ */ React.createElement(Heart, { className: "mx-auto h-10 w-10 text-rose" })),
-          /* @__PURE__ */ React.createElement("h2", { className: "mt-2 font-script text-4xl text-rose-deep" }, "I Love You, Sayangkuuu! ❤️"),
+          /* @__PURE__ */ React.createElement("h2", { className: "mt-2 font-script text-4xl text-rose-deep" }, EDITABLE_TEXT.shortLetterTitle),
           /* @__PURE__ */ React.createElement("p", { className: "mt-3 font-script text-2xl leading-snug text-rose-deep" }, FINAL_WISH),
-          /* @__PURE__ */ React.createElement("p", { className: "mt-3 font-serif text-sm leading-relaxed text-foreground" }, "Aku sayang kamu hari ini, esok, dan selamanya, Someone! Terima kasih sudah menjadi bagian terindah dalam hidupku 💕✨"),
+          /* @__PURE__ */ React.createElement("p", { className: "mt-3 font-serif text-sm leading-relaxed text-foreground" }, fillName(EDITABLE_TEXT.shortLetterBody)),
           /* @__PURE__ */ React.createElement("div", { className: "mt-4 flex flex-wrap justify-center gap-2" }, LOVE_BADGES.map((b, i) => /* @__PURE__ */ React.createElement("span", { key: i, className: "chip" }, b))),
           /* Continue appears only after the envelope has been opened and the card revealed. */
           /* @__PURE__ */ React.createElement(motion.button, {
@@ -910,7 +1034,7 @@ function PhotoStage({ onContinue, onOpen }) {
             initial: { opacity: 0, y: 10 },
             animate: { opacity: 1, y: 0 },
             transition: { delay: 0.25, duration: 0.35 }
-          }, "Lanjut sayang 💗")
+          }, EDITABLE_TEXT.continueButton)
         )
       )
     )
@@ -986,7 +1110,7 @@ function LetterStage({ onBurst }) {
       /* @__PURE__ */ React.createElement(
         "div",
         { className: "mt-10 pt-6 border-t border-blush text-center" },
-        /* @__PURE__ */ React.createElement("p", { className: "font-script text-4xl text-rose-deep" }, "I Love You, Sayangkuuu! ❤️"),
+        /* @__PURE__ */ React.createElement("p", { className: "font-script text-4xl text-rose-deep" }, EDITABLE_TEXT.longLetterEndingTitle),
         /* @__PURE__ */ React.createElement("p", { className: "mt-3 font-serif text-base italic text-muted-foreground" }, FINAL_WISH)
       )
     )
