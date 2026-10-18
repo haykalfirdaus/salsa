@@ -284,6 +284,59 @@
   0% { transform: translate3d(0, 0, 0); }
   100% { transform: translate3d(0, -125vh, 0); }
 }
+
+
+/* Floating music player: visible video + custom, themed controls. */
+.music-dock {
+  position: fixed;
+  z-index: 80;
+  right: max(10px, env(safe-area-inset-right));
+  bottom: max(10px, env(safe-area-inset-bottom));
+  width: min(274px, calc(100vw - 20px));
+  padding: 11px;
+  border-radius: 22px;
+  border: 1px solid rgba(215, 83, 119, .28);
+  background: rgba(255, 249, 248, .96);
+  color: #7c2944;
+  box-shadow: 0 16px 42px rgba(111, 36, 65, .24);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.music-dock-head { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; }
+.music-disc {
+  display: grid; place-items: center; flex: 0 0 38px; height: 38px; border-radius: 50%;
+  color: #fff7f8; background: linear-gradient(145deg, #f05a88, #a82d59);
+  box-shadow: 0 5px 12px rgba(180, 44, 89, .28);
+}
+.music-disc.playing { animation: disc-spin 5s linear infinite; }
+.music-song-title { font-size: 13px; font-weight: 700; line-height: 1.15; }
+.music-song-subtitle { font-size: 10px; opacity: .72; margin-top: 3px; }
+.music-video-frame { width: 100%; height: 200px; overflow: hidden; border-radius: 14px; background: #181218; box-shadow: inset 0 0 0 1px rgba(120, 35, 62, .12); }
+.music-video-frame iframe { display: block; width: 100%; height: 200px; border: 0; }
+.music-controls { display: flex; align-items: center; gap: 8px; margin-top: 9px; }
+.music-control-btn {
+  display: inline-grid; place-items: center; flex: 0 0 34px; height: 34px; width: 34px; border-radius: 50%;
+  border: 1px solid rgba(208, 70, 109, .22); background: #fff0f3; color: #a72c57;
+  transition: transform .18s ease, background .18s ease;
+}
+.music-control-btn:active { transform: scale(.92); }
+.music-control-btn.main { color: white; background: linear-gradient(140deg, #ef5a88, #a82d59); box-shadow: 0 5px 12px rgba(180, 44, 89, .22); }
+.music-volume { flex: 1; min-width: 50px; accent-color: #d83d70; height: 4px; }
+.music-volume-label { font-size: 10px; min-width: 25px; text-align: right; font-variant-numeric: tabular-nums; }
+.music-status { font-size: 10px; opacity: .72; margin-top: 7px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.music-source-link { color: #a72c57; text-decoration: underline; text-underline-offset: 2px; white-space: nowrap; }
+.music-eq { display: inline-flex; align-items: end; gap: 2px; height: 13px; margin-left: auto; }
+.music-eq span { display: block; width: 3px; border-radius: 3px; background: #d83d70; height: 5px; }
+.music-eq.playing span:nth-child(1) { animation: eq .55s ease-in-out infinite alternate; }
+.music-eq.playing span:nth-child(2) { animation: eq .42s ease-in-out infinite alternate-reverse; }
+.music-eq.playing span:nth-child(3) { animation: eq .63s ease-in-out infinite alternate; }
+@keyframes disc-spin { to { transform: rotate(360deg); } }
+@keyframes eq { from { height: 3px; } to { height: 13px; } }
+@media (max-width: 360px) {
+  .music-dock { width: min(250px, calc(100vw - 16px)); right: 8px; bottom: 8px; }
+  .music-video-frame, .music-video-frame iframe { height: 200px; }
+}
+
 </style>
 <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
@@ -511,7 +564,33 @@ function Birthday() {
     setStage(s);
     window.scrollTo({ top: 0, behavior: "instant" });
   };
-  return /* @__PURE__ */ React.createElement("main", { className: "relative min-h-screen overflow-x-hidden bg-flow font-body text-foreground" }, /* @__PURE__ */ React.createElement(FloatingHearts, null), /* @__PURE__ */ React.createElement(FloatingBears, null), /* @__PURE__ */ React.createElement(Confetti, { key: burst, active: burst > 0 }), /* @__PURE__ */ React.createElement("div", { className: `relative z-10 mx-auto flex min-h-screen max-w-xl justify-center px-5 py-10 ${stage === "photos" || stage === "letter" ? "items-start" : "items-center"}` }, /* @__PURE__ */ React.createElement(AnimatePresence, { mode: "wait" }, stage === "gift" && /* @__PURE__ */ React.createElement(GiftStage, { key: "g", onDone: () => go("quiz", true) }), stage === "quiz" && /* @__PURE__ */ React.createElement(QuizStage, { key: "q", onDone: () => go("card", true) }), stage === "card" && /* @__PURE__ */ React.createElement(CardStage, { key: "c", onDone: () => go("ask") }), stage === "ask" && /* @__PURE__ */ React.createElement(AskStage, { key: "a", onDone: () => go("photos") }), stage === "photos" && /* @__PURE__ */ React.createElement(PhotoStage, { key: "p", onDone: () => go("letter", true), onBurst: () => setBurst((n) => n + 1) }), stage === "letter" && /* @__PURE__ */ React.createElement(LetterStage, { key: "l", onBurst: () => setBurst((n) => n + 1) }))));
+  const restart = () => {
+    setBurst(0);
+    setStage("gift");
+    window.scrollTo({ top: 0, behavior: "instant" });
+  };
+  return /* @__PURE__ */ React.createElement(
+    "main",
+    { className: "relative min-h-screen overflow-x-hidden bg-flow font-body text-foreground" },
+    /* @__PURE__ */ React.createElement(FloatingHearts, null),
+    /* @__PURE__ */ React.createElement(FloatingBears, null),
+    /* @__PURE__ */ React.createElement(Confetti, { key: burst, active: burst > 0 }),
+    /* @__PURE__ */ React.createElement(MusicPlayer, null),
+    /* @__PURE__ */ React.createElement(
+      "div",
+      { className: `relative z-10 mx-auto flex min-h-screen max-w-xl justify-center px-5 py-10 ${stage === "photos" || stage === "letter" ? "items-start" : "items-center"}` },
+      /* @__PURE__ */ React.createElement(
+        AnimatePresence,
+        { mode: "wait" },
+        stage === "gift" && /* @__PURE__ */ React.createElement(GiftStage, { key: "g", onDone: () => go("quiz", true) }),
+        stage === "quiz" && /* @__PURE__ */ React.createElement(QuizStage, { key: "q", onDone: () => go("card", true) }),
+        stage === "card" && /* @__PURE__ */ React.createElement(CardStage, { key: "c", onDone: () => go("ask") }),
+        stage === "ask" && /* @__PURE__ */ React.createElement(AskStage, { key: "a", onDone: () => go("photos") }),
+        stage === "photos" && /* @__PURE__ */ React.createElement(PhotoStage, { key: "p", onDone: () => go("letter", true) }),
+        stage === "letter" && /* @__PURE__ */ React.createElement(LetterStage, { key: "l", onBurst: () => setBurst((n) => n + 1), onRestart: restart })
+      )
+    )
+  );
 }
 
 function GiftStage({ onDone }) {
@@ -526,6 +605,8 @@ function GiftStage({ onDone }) {
       whileTap: { scale: 0.94 },
       onClick: () => {
         if (open) return;
+        // Music starts from 0:00 on the first user gesture when the player is ready.
+        window.dispatchEvent(new Event("birthday:play-music"));
         setOpen(true);
         setTimeout(onDone, 800);
       }
@@ -650,44 +731,43 @@ function AskStage({ onDone }) {
   return /* @__PURE__ */ React.createElement(motion.section, { ...page, className: "text-center" }, /* @__PURE__ */ React.createElement("div", { className: "float-deco", style: { animationDuration: "2.4s" } }, /* @__PURE__ */ React.createElement(Bear, { className: "mx-auto h-28 w-28", mood: "happy" })), /* @__PURE__ */ React.createElement("h2", { className: "mt-6 font-serif text-3xl" }, "Mau lanjut liat kenangan kitaa?"), /* @__PURE__ */ React.createElement("div", { className: "mt-8 flex items-center justify-center gap-4" }, /* @__PURE__ */ React.createElement("button", { onClick: onDone, className: "btn-primary" }, "Mauu"), /* @__PURE__ */ React.createElement(motion.button, { animate: pos, transition: { type: "tween", duration: 0.18 }, onMouseEnter: flee, onTouchStart: flee, onClick: flee, className: "btn-soft" }, "Nggak")));
 }
 
-function PhotoStage({ onDone, onBurst }) {
-  const [autoScroll, setAutoScroll] = useState(true);
-  const [flapOpen, setFlapOpen] = useState(false);
-  const [paperUp, setPaperUp] = useState(false);
+function PhotoStage({ onDone }) {
   const autoRef = useRef(true);
-  const loveCardRef = useRef(null);
-
-  useEffect(() => {
-    autoRef.current = autoScroll;
-  }, [autoScroll]);
+  const transitionTimerRef = useRef(null);
+  const transitionedRef = useRef(false);
 
   useEffect(() => {
     let raf = 0;
     let lastTime = null;
-    const speedPxPerSec = 95;
+
+    const moveToLetterOnce = () => {
+      if (transitionedRef.current) return;
+      transitionedRef.current = true;
+      autoRef.current = false;
+      transitionTimerRef.current = setTimeout(() => onDone(), 1000);
+    };
 
     const step = (now) => {
-      if (!autoRef.current) return;
+      if (!autoRef.current || transitionedRef.current) return;
       if (lastTime === null) lastTime = now;
-      // Cap large frame gaps (for example after switching tabs) to avoid jumps.
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
       const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-      // Always read the real scroll position so manual swipes/scrolls are preserved.
       const currentY = window.scrollY;
       if (maxScroll <= 0 || currentY >= maxScroll - 4) {
         window.scrollTo(0, maxScroll);
-        autoRef.current = false;
-        setAutoScroll(false);
+        moveToLetterOnce();
         return;
       }
 
+      // Keep autoplay moving from the user's current position, even after manual swipes.
+      const speedPxPerSec = 95;
       const nextY = Math.min(maxScroll, currentY + speedPxPerSec * dt);
       window.scrollTo(0, nextY);
       if (nextY >= maxScroll - 4) {
-        autoRef.current = false;
-        setAutoScroll(false);
+        window.scrollTo(0, maxScroll);
+        moveToLetterOnce();
         return;
       }
       raf = requestAnimationFrame(step);
@@ -700,29 +780,18 @@ function PhotoStage({ onDone, onBurst }) {
 
     return () => {
       clearTimeout(timer);
+      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
       cancelAnimationFrame(raf);
     };
   }, []);
 
-  const handleOpenEnvelope = () => {
-    if (flapOpen) return;
-    setFlapOpen(true);
-    setTimeout(() => {
-      setPaperUp(true);
-      if (onBurst) onBurst();
-    }, 180);
-  };
-
   return /* @__PURE__ */ React.createElement(
     motion.section,
     { ...page, className: "w-full text-center pb-28" },
-    /* @__PURE__ */ React.createElement(LoveShower, { active: paperUp }),
-
     /* @__PURE__ */ React.createElement("p", { className: "font-serif text-xs uppercase tracking-[0.4em] text-rose-deep" }, "kenangan kita"),
     /* @__PURE__ */ React.createElement("h2", { className: "mt-2 font-script text-5xl text-rose-deep" }, "Scroll pelan-pelan yaa"),
     /* @__PURE__ */ React.createElement("div", { className: "mt-4 flex justify-center float-deco", style: { animationDuration: "2.5s" } }, /* @__PURE__ */ React.createElement(Bear, { className: "h-20 w-20" })),
     /* @__PURE__ */ React.createElement("div", { className: "h-[15vh]" }),
-
     MEMORIES.map((m, k) => /* @__PURE__ */ React.createElement(
       motion.figure,
       {
@@ -737,81 +806,11 @@ function PhotoStage({ onDone, onBurst }) {
       /* @__PURE__ */ React.createElement("figcaption", { className: "mt-3 max-w-72 font-script text-2xl text-rose-deep" }, m.caption),
       /* @__PURE__ */ React.createElement(Bear, { className: `absolute -bottom-8 h-16 w-16 ${k % 2 ? "-left-8" : "-right-8"}` })
     )),
-
-    /* @__PURE__ */ React.createElement(
-      "div",
-      { className: "mt-12 flex flex-col items-center justify-center pt-8" },
-      /* @__PURE__ */ React.createElement("p", { className: "font-serif text-sm uppercase tracking-[0.3em] text-rose-deep" }, "kejutan spesial untukmu"),
-      /* @__PURE__ */ React.createElement("h3", { className: "mt-2 font-script text-5xl text-rose-deep" }, paperUp ? "Surat Cinta Terbuka!" : "Ada Surat Cinta Untukmu"),
-
-      /* @__PURE__ */ React.createElement(
-        motion.button,
-        {
-          type: "button",
-          onClick: handleOpenEnvelope,
-          whileTap: { scale: 0.93 },
-          className: `mt-10 relative flex flex-col items-center focus:outline-none ${!flapOpen ? "envelope-wobble cursor-pointer" : "cursor-default"}`
-        },
-        /* @__PURE__ */ React.createElement(Heart, { className: "absolute -left-6 -top-2 h-7 w-7 text-rose animate-bounce" }),
-        /* @__PURE__ */ React.createElement(Heart, { className: "absolute -right-6 top-0 h-6 w-6 text-gold animate-pulse" }),
-        /* @__PURE__ */ React.createElement(Heart, { className: "absolute -left-4 bottom-4 h-5 w-5 text-rose-deep animate-pulse" }),
-        /* @__PURE__ */ React.createElement(EnvelopeSvg, { flapOpen, paperUp }),
-        !flapOpen && /* @__PURE__ */ React.createElement(
-          "span",
-          { className: "mt-4 inline-flex items-center gap-2 rounded-full bg-rose px-6 py-2.5 text-sm font-semibold text-cream shadow-lg animate-pulse" },
-          "💌 Ketuk Surat Untuk Membuka"
-        )
-      ),
-
-      /* @__PURE__ */ React.createElement(
-        AnimatePresence,
-        null,
-        paperUp && /* @__PURE__ */ React.createElement(
-          motion.div,
-          {
-            ref: loveCardRef,
-            initial: { opacity: 0, scale: 0.88, y: 28 },
-            animate: { opacity: 1, scale: 1, y: 0 },
-            transition: { duration: 0.5, ease: "easeOut" },
-            className: "card-paper relative mt-8 w-full p-8 text-center"
-          },
-          /* @__PURE__ */ React.createElement("div", { className: "flex justify-center gap-3 mb-3" },
-            /* @__PURE__ */ React.createElement(Heart, { className: "h-8 w-8 text-rose animate-bounce" }),
-            /* @__PURE__ */ React.createElement(Heart, { className: "h-10 w-10 text-rose-deep animate-pulse" }),
-            /* @__PURE__ */ React.createElement(Heart, { className: "h-8 w-8 text-rose animate-bounce" })
-          ),
-          /* @__PURE__ */ React.createElement("h2", { className: "font-script text-5xl text-rose-deep" }, LOVE_MESSAGES[0]),
-          /* @__PURE__ */ React.createElement("p", { className: "mt-4 font-serif text-lg leading-relaxed text-foreground" }, LOVE_MESSAGES[1]),
-          /* @__PURE__ */ React.createElement("p", { className: "mt-3 font-serif text-base italic text-muted-foreground" }, LOVE_MESSAGES[2]),
-          /* @__PURE__ */ React.createElement("p", { className: "mt-3 font-serif text-lg font-semibold text-rose-deep" }, LOVE_MESSAGES[3]),
-
-          /* @__PURE__ */ React.createElement(
-            "div",
-            { className: "mt-6 flex flex-wrap justify-center gap-2" },
-            LOVE_BADGES.map((badge, idx) => /* @__PURE__ */ React.createElement(
-              "span",
-              { key: idx, className: "chip shadow-xs" },
-              badge
-            ))
-          ),
-
-          /* @__PURE__ */ React.createElement(
-            "div",
-            { className: "mt-8 pt-4 border-t border-border" },
-            /* @__PURE__ */ React.createElement("p", { className: "mb-4 text-xs uppercase tracking-widest text-muted-foreground" }, "ada satu surat terakhir untukmu"),
-            /* @__PURE__ */ React.createElement(
-              "button",
-              { onClick: onDone, className: "btn-primary inline-flex items-center gap-2" },
-              "📜 Baca Surat Terakhir"
-            )
-          )
-        )
-      )
-    )
+    /* @__PURE__ */ React.createElement("p", { className: "mt-10 font-script text-3xl text-rose-deep" }, "Sebentar lagi, ada surat kecil untukmu ♡")
   );
 }
 
-function LetterStage({ onBurst }) {
+function LetterStage({ onBurst, onRestart }) {
   const box = useRef(null);
   const finalWishRef = useRef(null);
   const [finished, setFinished] = useState(false);
@@ -930,8 +929,246 @@ function LetterStage({ onBurst }) {
           { className: "mt-5 flex flex-wrap justify-center gap-2" },
           LOVE_BADGES.map((b, i) => /* @__PURE__ */ React.createElement("span", { key: i, className: "chip" }, b))
         ),
-        /* @__PURE__ */ React.createElement("p", { className: "mt-6 text-xs text-muted-foreground" }, "geser suratnya untuk membaca ulang")
+        /* @__PURE__ */ React.createElement("p", { className: "mt-6 text-xs text-muted-foreground" }, "geser suratnya untuk membaca ulang"),
+        /* @__PURE__ */ React.createElement(
+          "button",
+          {
+            type: "button",
+            onClick: onRestart,
+            className: "mt-5 inline-flex items-center justify-center gap-2 rounded-full border border-blush bg-card px-5 py-3 text-sm font-semibold text-rose-deep shadow-sm transition-transform active:scale-95"
+          },
+          "🎁 Ulangi Kejutan Dari Awal"
+        )
       )
+    )
+  );
+}
+
+function MusicPlayer() {
+  const mountRef = useRef(null);
+  const playerRef = useRef(null);
+  const readyRef = useRef(false);
+  const startedRef = useRef(false);
+  const startRequestedRef = useRef(false);
+  const volumeRef = useRef(42);
+  const [ready, setReady] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const [muted, setMuted] = useState(false);
+  const [volume, setVolume] = useState(42);
+
+  useEffect(() => {
+    let destroyed = false;
+    let priorApiCallback = null;
+
+    const playFromStart = () => {
+      startRequestedRef.current = true;
+      const player = playerRef.current;
+      if (!player || !readyRef.current) return;
+      try {
+        player.seekTo(0, true);
+        player.setVolume(volumeRef.current);
+        player.unMute();
+        setMuted(false);
+        player.playVideo();
+        startedRef.current = true;
+      } catch (_) {}
+    };
+
+    const toggleFromOpening = () => {
+      if (playing || startedRef.current) return;
+      playFromStart();
+    };
+    window.addEventListener("birthday:play-music", toggleFromOpening);
+
+    const createPlayer = () => {
+      if (destroyed || !mountRef.current || !window.YT || !window.YT.Player || playerRef.current) return;
+      try {
+        playerRef.current = new window.YT.Player(mountRef.current, {
+          width: "252",
+          height: "200",
+          videoId: "HyhLsy6b0XI",
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            rel: 0,
+            playsinline: 1,
+            enablejsapi: 1,
+            iv_load_policy: 3,
+            origin: window.location.origin !== "null" ? window.location.origin : undefined
+          },
+          events: {
+            onReady: (event) => {
+              readyRef.current = true;
+              setReady(true);
+              event.target.setVolume(volumeRef.current);
+              if (startRequestedRef.current) {
+                try {
+                  event.target.seekTo(0, true);
+                  event.target.unMute();
+                  event.target.playVideo();
+                  startedRef.current = true;
+                } catch (_) {}
+              }
+            },
+            onStateChange: (event) => {
+              const yt = window.YT && window.YT.PlayerState;
+              const isPlaying = !!yt && event.data === yt.PLAYING;
+              setPlaying(isPlaying);
+              if (yt && event.data === yt.ENDED) {
+                startedRef.current = false;
+                setPlaying(false);
+              }
+            },
+            onError: () => setReady(false)
+          }
+        });
+      } catch (_) {
+        setReady(false);
+      }
+    };
+
+    if (window.YT && window.YT.Player) {
+      createPlayer();
+    } else {
+      priorApiCallback = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = function () {
+        if (typeof priorApiCallback === "function") priorApiCallback();
+        createPlayer();
+      };
+      let script = document.querySelector('script[data-youtube-iframe-api="true"]');
+      if (!script) {
+        script = document.createElement("script");
+        script.src = "https://www.youtube.com/iframe_api";
+        script.async = true;
+        script.dataset.youtubeIframeApi = "true";
+        document.head.appendChild(script);
+      }
+    }
+
+    return () => {
+      destroyed = true;
+      window.removeEventListener("birthday:play-music", toggleFromOpening);
+      if (playerRef.current && typeof playerRef.current.destroy === "function") {
+        try { playerRef.current.destroy(); } catch (_) {}
+      }
+      playerRef.current = null;
+    };
+  }, []);
+
+  const togglePlay = () => {
+    const player = playerRef.current;
+    if (!player || !readyRef.current) return;
+    if (playing) {
+      player.pauseVideo();
+      return;
+    }
+    try {
+      if (!startedRef.current) player.seekTo(0, true);
+      player.setVolume(volumeRef.current);
+      if (muted) {
+        player.unMute();
+        setMuted(false);
+      }
+      player.playVideo();
+      startedRef.current = true;
+    } catch (_) {}
+  };
+
+  const toggleMute = () => {
+    const player = playerRef.current;
+    if (!player || !readyRef.current) return;
+    if (muted) {
+      player.unMute();
+      player.setVolume(volumeRef.current);
+      setMuted(false);
+    } else {
+      player.mute();
+      setMuted(true);
+    }
+  };
+
+  const changeVolume = (value) => {
+    const next = Math.max(0, Math.min(100, Number(value)));
+    volumeRef.current = next;
+    setVolume(next);
+    const player = playerRef.current;
+    if (player && readyRef.current) player.setVolume(next);
+    if (next === 0 && !muted) {
+      if (player && readyRef.current) player.mute();
+      setMuted(true);
+    } else if (next > 0 && muted) {
+      if (player && readyRef.current) {
+        player.unMute();
+        player.setVolume(next);
+      }
+      setMuted(false);
+    }
+  };
+
+  return /* @__PURE__ */ React.createElement(
+    "aside",
+    { className: "music-dock", "aria-label": "Pemutar musik Bertaut" },
+    /* @__PURE__ */ React.createElement(
+      "div",
+      { className: "music-dock-head" },
+      /* @__PURE__ */ React.createElement("div", { className: `music-disc ${playing ? "playing" : ""}`, "aria-hidden": "true" }, "♫"),
+      /* @__PURE__ */ React.createElement(
+        "div",
+        { className: "min-w-0" },
+        /* @__PURE__ */ React.createElement("p", { className: "music-song-title" }, "Bertaut"),
+        /* @__PURE__ */ React.createElement("p", { className: "music-song-subtitle" }, "Nadin Amizah · mulai dari awal")
+      ),
+      /* @__PURE__ */ React.createElement("div", { className: `music-eq ${playing ? "playing" : ""}`, "aria-hidden": "true" },
+        /* @__PURE__ */ React.createElement("span", null),
+        /* @__PURE__ */ React.createElement("span", null),
+        /* @__PURE__ */ React.createElement("span", null)
+      )
+    ),
+    /* @__PURE__ */ React.createElement(
+      "div",
+      { className: "music-video-frame", title: "Video resmi Bertaut" },
+      /* @__PURE__ */ React.createElement("div", { ref: mountRef, style: { width: "100%", height: "200px" } })
+    ),
+    /* @__PURE__ */ React.createElement(
+      "div",
+      { className: "music-controls" },
+      /* @__PURE__ */ React.createElement("button", {
+        type: "button",
+        className: "music-control-btn main",
+        onClick: togglePlay,
+        disabled: !ready,
+        "aria-label": playing ? "Jeda lagu" : "Putar lagu dari awal"
+      }, playing ? "Ⅱ" : "▶"),
+      /* @__PURE__ */ React.createElement("button", {
+        type: "button",
+        className: "music-control-btn",
+        onClick: toggleMute,
+        disabled: !ready,
+        "aria-label": muted ? "Nyalakan suara" : "Matikan suara"
+      }, muted || volume === 0 ? "♩̸" : "♫"),
+      /* @__PURE__ */ React.createElement("input", {
+        className: "music-volume",
+        type: "range",
+        min: 0,
+        max: 100,
+        step: 1,
+        value: volume,
+        onChange: (event) => changeVolume(event.target.value),
+        disabled: !ready,
+        "aria-label": "Volume lagu"
+      }),
+      /* @__PURE__ */ React.createElement("span", { className: "music-volume-label" }, `${volume}%`)
+    ),
+    /* @__PURE__ */ React.createElement(
+      "div",
+      { className: "music-status" },
+      /* @__PURE__ */ React.createElement("span", null, !ready ? "Menghubungkan lagu…" : playing ? "Sedang diputar ♡" : "Sentuh ▶ untuk memutar"),
+      /* @__PURE__ */ React.createElement("a", {
+        className: "music-source-link",
+        href: "https://www.youtube.com/watch?v=HyhLsy6b0XI",
+        target: "_blank",
+        rel: "noreferrer"
+      }, "YouTube ↗")
     )
   );
 }
