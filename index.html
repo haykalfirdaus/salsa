@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Selamat Ulang Tahun, sayangkuuu cintakuu</title>
+<title>Selamat Ulang Tahun, Salsa!</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Quicksand:wght@400;500;600&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -246,44 +246,49 @@
 <script>
 const { useEffect, useRef, useState } = React;
 const { AnimatePresence, motion, useAnimation } = Motion;
-const BIRTHDAY_NAME = "Someone";
-const QUIZ_OPTIONS = ["Kucing Tetangga", "Someone", "Aku Sendiri", "Pak RT"];
+
+const BIRTHDAY_NAME = "Salsa";
+const QUIZ_OPTIONS = ["Kucing Tetangga", "Salsa", "Aku Sendiri", "Pak RT"];
 const WRONG_LINES = [
   "Ihh kok salahh...",
   "Masa lupa sihh, gemesh!",
   "Coba lagi dong, hmph",
   "Salah wlee, mikir lagi yaa"
 ];
-const TEMPLATES = {
-  Romantis: "Selamat ulang tahun, Someone. Siapa sangka, sosok yang dulu kukenal dalam kepolosan masa SD, kini kembali dipertemukan semesta di masa SMA untuk menjadi alasan terindah di setiap detak jantungku. Semoga harimu sehangat tatapan kita saat pertama kali bertemu kembali.",
-  Lucu: "Selamat bertambah usia, Someone! Dari zaman masih polos pakai seragam putih merah di SD sampai sekarang ketemu lagi pakai putih abu-abu di SMA, kenapa kamu makin hari makin bikin aku jatuh hati terus sih?",
-  Puitis: "Di antara ribuan langkah yang sempat terpisah selepas masa kecil kita, takdir menuntunku kembali padamu di bangku SMA. Selamat ulang tahun, Someone—kamu adalah rindu masa lalu yang menjelma menjadi masa depanku.",
-  Singkat: "Selamat ulang tahun, Someone. Dari kenangan masa SD hingga takdir indah di masa SMA, hatiku selalu memilihmu."
-};
+
+const MAIN_LETTER_TEXT = "Selamat ulang tahun, Salsa tersayang. Siapa sangka, sosok yang dulu kukenal dalam kepolosan masa SD, kini kembali dipertemukan semesta di masa SMA untuk menjadi alasan terindah di setiap detak jantungku. Semoga harimu sehangat tatapan kita saat pertama kali bertemu kembali, dan semoga semua impian indahmu tercapai.";
+
 const SWEET_WORDS = [
-  "Dulu di bangku SD kita hanya sebatas cerita kecil, tapi di masa SMA ini kamu adalah seluruh isi doaku, Someone.",
+  "Dulu di bangku SD kita hanya sebatas cerita kecil, tapi di masa SMA ini kamu adalah seluruh isi doaku, Salsa.",
   "Semesta sempat menjauhkan langkah kita, hanya agar aku tahu betapa berharganya saat kita dipertemukan kembali di SMA.",
   "Dari tawa polos masa kecil hingga debar hangat masa remaja, hatiku ternyata selalu mencari jalan pulang menuju kamu.",
-  "Terima kasih telah hadir kembali di hidupku, Someone. Mengenalmu dua kali adalah anugerah terindah dalam takdirku."
+  "Terima kasih telah hadir kembali di hidupku, Salsa. Mengenalmu dua kali adalah anugerah terindah dalam takdirku."
 ];
+
 const MEMORIES = [
-  { src: "data:image/jpeg;base64,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=", caption: "Takdir SMA yang mempertemukan aku kembali denganmu, Someone", rot: 3 }
+  { src: "http://hbdsalsa.my.id/foto1", caption: "Kenangan manis sejak masa putih merah hingga kita bertemu lagi", rot: -4 },
+  { src: "http://hbdsalsa.my.id/foto2", caption: "Takdir SMA yang mempertemukan aku kembali denganmu, Salsa", rot: 3 },
+  { src: "http://hbdsalsa.my.id/foto3", caption: "Seikat rindu yang tumbuh sejak dulu, kini mekar untukmu", rot: -2 },
+  { src: "http://hbdsalsa.my.id/foto4", caption: "Bersamamu, setiap detik terasa seperti keajaiban yang nyata", rot: 4 },
+  { src: "http://hbdsalsa.my.id/foto5", caption: "Menjalani hari-hari indah bersama senyuman terindahmu", rot: -3 }
 ];
+
 const LONG_LETTER = [
-  "Untukmu, Someone, yang hari ini merayakan indahnya hari kelahiran.",
+  "Untukmu, Salsa, yang hari ini merayakan indahnya hari kelahiran.",
   "Jika aku menoleh ke belakang, rasanya begitu ajaib melihat bagaimana semesta merangkai kisah kita. Semuanya bermula dari kenangan sederhana di masa SD—saat kita masih berlarian dengan seragam putih merah, berbagi tawa polos tanpa tahu bahwa kelak, namamu akan menjadi nama yang paling berarti di dalam hidupku.",
   "Waktu sempat membawa kita berjalan di persimpangan yang berbeda. Tahun-tahun berlalu, musim berganti, dan kita tumbuh dewasa dengan cerita masing-masing. Namun ternyata, benang takdir yang terikat sejak masa kecil itu tidak pernah benar-benar putus.",
   "Hingga akhirnya, di bawah langit masa SMA dengan seragam putih abu-abu, semesta kembali mempertemukan kita. Saat mataku kembali menangkap sosokmu dan melihat senyummu lagi setelah sekian lama, ada debar hangat yang seketika menyadarkanku: ternyata sejauh apa pun langkah kita sempat berjarak, hatiku tetap mengenali rumahnya.",
   "Pertemuan kembali di masa SMA ini bukan sekadar kebetulan bagiku, melainkan cara Tuhan menjawab rindu yang bahkan dulu belum sempat kupahami namanya. Mengenalmu di masa kecil adalah sebuah keberuntungan, namun dipertemukan kembali denganmu saat remaja adalah keajaiban yang paling kusyukuri.",
-  "Someone, terima kasih karena tetap memiliki tatapan dan senyuman yang menenangkan seperti dulu, namun dengan kehadiran yang kini jauh lebih menghangatkan hatiku. Bersamamu, setiap sudut sekolah, setiap obrolan ringan, dan setiap senja yang kita lewati terasa begitu istimewa.",
+  "Salsa, terima kasih karena tetap memiliki tatapan dan senyuman yang menenangkan seperti dulu, namun dengan kehadiran yang kini jauh lebih menghangatkan hatiku. Bersamamu, setiap sudut sekolah, setiap obrolan ringan, dan setiap senja yang kita lewati terasa begitu istimewa.",
   "Di hari ulang tahunmu ini, aku berdoa semoga langkahmu selalu dipeluk oleh kebahagiaan. Semoga setiap mimpi yang sedang kamu perjuangkan di masa putih abu-abu ini satu per satu menemukan jalannya untuk terwujud, dan semoga tidak ada hal apa pun yang memudarkan senyum indahmu.",
-  "Terima kasih sudah kembali ke dalam cerita hidupku dan menjadi tempat ternyaman untuk hatiku berlabuh. Selamat ulang tahun, Someone. Aku menyayangimu—dari kenangan masa lalu, di setiap detik hari ini, hingga ribuan hari esok yang akan kita tempuh bersama."
+  "Terima kasih sudah kembali ke dalam cerita hidupku dan menjadi tempat ternyaman untuk hatiku berlabuh. Selamat ulang tahun, Salsa. Aku menyayangimu—dari kenangan masa lalu, di setiap detik hari ini, hingga ribuan hari esok yang akan kita tempuh bersama."
 ];
-const FINAL_WISH = "Selamat ulang tahun, Someone tersayang. Semoga panjang umur, sehat selalu, makin bahagia, dan semua mimpimu tercapai. Dari masa SD hingga kita bertemu lagi di SMA ini, aku akan selalu di sini untukmu.";
+
+const FINAL_WISH = "Selamat ulang tahun, Salsa tersayang. Semoga panjang umur, sehat selalu, makin bahagia, dan semua mimpimu tercapai. Dari masa SD hingga kita bertemu lagi di SMA ini, aku akan selalu di sini untukmu.";
 
 const LOVE_MESSAGES = [
   "I Love You, Sayangkuuu! ❤️",
-  "Aku sayang banget sama kamu, Someone! Lebih dari kata-kata yang bisa kuucapkan 💕",
+  "Aku sayang banget sama kamu, Salsa! Lebih dari kata-kata yang bisa kuucapkan 💕",
   "Terima kasih sudah hadir di masa kecilku dan kembali menjadi cinta terindah di masa SMA-ku ✨",
   "I love you 3000, sayangku, cintaku, rumah ternyamanku, dan masa depanku! 🥰💖"
 ];
@@ -371,7 +376,7 @@ const EnvelopeSvg = React.memo(function EnvelopeSvg({ flapOpen, paperUp }) {
         fontWeight: "bold",
         fontFamily: "Playfair Display, serif"
       },
-      "I ❤️ U, Someone"
+      "I ❤️ U, Salsa"
     ),
     /* @__PURE__ */ React.createElement("line", { x1: "58", y1: "145", x2: "182", y2: "145", stroke: "var(--blush)", strokeWidth: "2.5", strokeLinecap: "round" }),
     /* @__PURE__ */ React.createElement("line", { x1: "72", y1: "156", x2: "168", y2: "156", stroke: "var(--blush)", strokeWidth: "2.5", strokeLinecap: "round" })
@@ -522,20 +527,24 @@ function QuizStage({ onDone }) {
   const [mood, setMood] = useState("idle");
   const [line, setLine] = useState("Hayoo, siapa yang lagi ultah yaa?");
   const [offsets, setOffsets] = useState({});
+  const [clickedWrong, setClickedWrong] = useState({});
   const shake = useAnimation();
+
   const pick = (o) => {
     if (o === BIRTHDAY_NAME) {
       setMood("happy");
-      setLine("Nahh benerr!");
+      setLine("Nahh benerr, itu Salsa!");
       setTimeout(onDone, 1200);
       return;
     }
     setMood("pout");
     setLine(WRONG_LINES[Math.floor(Math.random() * WRONG_LINES.length)] ?? "Ihh salahh");
     shake.start({ x: [0, -10, 10, -8, 8, 0], transition: { duration: 0.35 } });
-    setOffsets((p) => ({ ...p, [o]: { x: Math.round((Math.random() - 0.5) * 70), y: Math.round((Math.random() - 0.5) * 26) } }));
+    setClickedWrong(prev => ({ ...prev, [o]: true }));
+    setOffsets((p) => ({ ...p, [o]: { x: Math.round((Math.random() - 0.5) * 80), y: Math.round((Math.random() - 0.5) * 35) } }));
     setTimeout(() => setMood("idle"), 1000);
   };
+
   return /* @__PURE__ */ React.createElement(motion.section, { ...page, className: "w-full text-center" },
     /* @__PURE__ */ React.createElement(motion.div, { animate: shake, className: "flex flex-col items-center" },
       /* @__PURE__ */ React.createElement("div", { className: "flex items-end gap-2" },
@@ -544,27 +553,29 @@ function QuizStage({ onDone }) {
       ),
       /* @__PURE__ */ React.createElement("h2", { className: `mt-4 font-serif text-3xl transition-colors duration-200 ${mood === "happy" ? "text-rose-deep" : "text-foreground"}` }, line)
     ),
-    /* @__PURE__ */ React.createElement("div", { className: "mt-8 grid grid-cols-2 gap-4" },
-      QUIZ_OPTIONS.map((o) => /* @__PURE__ */ React.createElement(
-        motion.button,
-        {
-          key: o,
-          animate: offsets[o] ?? { x: 0, y: 0 },
-          transition: { type: "tween", duration: 0.2 },
-          whileTap: { scale: 0.94 },
-          onClick: () => pick(o),
-          disabled: mood === "happy",
-          className: "btn-soft cursor-pointer"
-        },
-        o
-      ))
+    /* @__PURE__ */ React.createElement("div", { className: "mt-8 grid grid-cols-2 gap-4 relative min-h-[140px]" },
+      QUIZ_OPTIONS.map((o) => {
+        const isCorrect = o === BIRTHDAY_NAME;
+        return /* @__PURE__ */ React.createElement(
+          motion.button,
+          {
+            key: o,
+            animate: isCorrect ? { scale: [1, 1.05, 1], ...(offsets[o] || {}) } : (offsets[o] || { x: 0, y: 0 }),
+            transition: isCorrect ? { repeat: Infinity, duration: 1.5 } : { type: "tween", duration: 0.2 },
+            whileTap: { scale: 0.94 },
+            onClick: () => pick(o),
+            disabled: mood === "happy",
+            className: `btn-soft cursor-pointer transition-all duration-300 ${isCorrect ? "border-rose bg-rose/10 font-bold shadow-md" : ""} ${clickedWrong[o] ? "opacity-70 scale-95" : ""}`
+          },
+          o + (isCorrect ? " ✨" : "")
+        );
+      })
     )
   );
 }
 
 function CardStage({ onDone }) {
-  const [mode, setMode] = useState("Romantis");
-  const text = TEMPLATES[mode];
+  const text = MAIN_LETTER_TEXT;
   const textRef = useRef(null);
   const [done, setDone] = useState(false);
   const [word, setWord] = useState(0);
@@ -609,17 +620,6 @@ function CardStage({ onDone }) {
   };
 
   return /* @__PURE__ */ React.createElement(motion.section, { ...page, className: "w-full" },
-    /* @__PURE__ */ React.createElement("div", { className: "mb-5 flex flex-wrap justify-center gap-2" },
-      Object.keys(TEMPLATES).map((k) => /* @__PURE__ */ React.createElement(
-        "button",
-        {
-          key: k,
-          onClick: () => setMode(k),
-          className: `chip transition-colors cursor-pointer ${mode === k ? "chip-active" : ""}`
-        },
-        k
-      ))
-    ),
     /* @__PURE__ */ React.createElement(
       motion.div,
       {
@@ -631,8 +631,8 @@ function CardStage({ onDone }) {
       },
       /* @__PURE__ */ React.createElement(Flower, { className: "absolute -left-6 -top-6 h-16 w-16 animate-spin-slow" }),
       /* @__PURE__ */ React.createElement(Flower, { className: "absolute -bottom-6 -right-6 h-14 w-14 animate-spin-slow" }),
-      /* @__PURE__ */ React.createElement("p", { className: "font-serif text-xs uppercase tracking-[0.4em] text-rose-deep" }, `ucapan kado • ${mode}`),
-      /* @__PURE__ */ React.createElement("h2", { className: "mt-2 font-script text-5xl text-rose-deep" }, "Happy Birthday"),
+      /* @__PURE__ */ React.createElement("p", { className: "font-serif text-xs uppercase tracking-[0.4em] text-rose-deep" }, "ucapan kado spesial"),
+      /* @__PURE__ */ React.createElement("h2", { className: "mt-2 font-script text-5xl text-rose-deep" }, "Happy Birthday, Salsa"),
       /* @__PURE__ */ React.createElement("p", { className: "mt-5 min-h-28 font-serif text-lg leading-relaxed" },
         /* @__PURE__ */ React.createElement("span", { ref: textRef }),
         !done && /* @__PURE__ */ React.createElement("span", { className: "caret" }, "|")
@@ -650,7 +650,7 @@ function CardStage({ onDone }) {
     ),
     /* @__PURE__ */ React.createElement(AnimatePresence, null,
       done && /* @__PURE__ */ React.createElement(motion.div, { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.3 }, className: "mt-6 text-center" },
-        /* @__PURE__ */ React.createElement("button", { onClick: onDone, className: "btn-primary cursor-pointer" }, "Lanjut")
+        /* @__PURE__ */ React.createElement("button", { onClick: onDone, className: "btn-primary cursor-pointer" }, "Lanjut ke Kenangan Kita")
       )
     )
   );
@@ -663,7 +663,7 @@ function AskStage({ onDone }) {
     /* @__PURE__ */ React.createElement("div", { className: "float-deco", style: { animationDuration: "2.4s" } },
       /* @__PURE__ */ React.createElement(Bear, { className: "mx-auto h-28 w-28", mood: "happy" })
     ),
-    /* @__PURE__ */ React.createElement("h2", { className: "mt-6 font-serif text-3xl" }, "Mau lanjut liat kenangan kitaa?"),
+    /* @__PURE__ */ React.createElement("h2", { className: "mt-6 font-serif text-3xl" }, "Mau lanjut liat galeri foto kenangan kitaa?"),
     /* @__PURE__ */ React.createElement("div", { className: "mt-8 flex items-center justify-center gap-4" },
       /* @__PURE__ */ React.createElement("button", { onClick: onDone, className: "btn-primary cursor-pointer" }, "Mauu"),
       /* @__PURE__ */ React.createElement(motion.button, { animate: pos, transition: { type: "tween", duration: 0.18 }, onMouseEnter: flee, onTouchStart: flee, onClick: flee, className: "btn-soft cursor-pointer" }, "Nggak")
@@ -752,7 +752,7 @@ function PhotoStage({ onDone, onBurst }) {
     motion.section,
     { ...page, className: "w-full text-center pb-28" },
     /* @__PURE__ */ React.createElement(LoveShower, { active: paperUp }),
-    /* @__PURE__ */ React.createElement("p", { className: "font-serif text-xs uppercase tracking-[0.4em] text-rose-deep" }, "kenangan kita"),
+    /* @__PURE__ */ React.createElement("p", { className: "font-serif text-xs uppercase tracking-[0.4em] text-rose-deep" }, "galeri kenangan kita"),
     /* @__PURE__ */ React.createElement("h2", { className: "mt-2 font-script text-5xl text-rose-deep" }, "Scroll pelan-pelan yaa"),
     /* @__PURE__ */ React.createElement("div", { className: "mt-4 flex justify-center float-deco", style: { animationDuration: "2.5s" } },
       /* @__PURE__ */ React.createElement(Bear, { className: "h-20 w-20" })
@@ -816,8 +816,8 @@ function PhotoStage({ onDone, onBurst }) {
             LOVE_BADGES.map((badge, idx) => /* @__PURE__ */ React.createElement("span", { key: idx, className: "chip shadow-xs" }, badge))
           ),
           /* @__PURE__ */ React.createElement("div", { className: "mt-8 pt-4 border-t border-border" },
-            /* @__PURE__ */ React.createElement("p", { className: "mb-4 text-xs uppercase tracking-widest text-muted-foreground" }, "ada satu surat terakhir untukmu"),
-            /* @__PURE__ */ React.createElement("button", { onClick: onDone, className: "btn-primary inline-flex items-center gap-2 cursor-pointer" }, "📜 Baca Surat Terakhir")
+            /* @__PURE__ */ React.createElement("p", { className: "mb-4 text-xs uppercase tracking-widest text-muted-foreground" }, "ada satu surat panjang terakhir untukmu"),
+            /* @__PURE__ */ React.createElement("button", { onClick: onDone, className: "btn-primary inline-flex items-center gap-2 cursor-pointer" }, "📜 Baca Surat Panjang Terakhir")
           )
         )
       )
@@ -933,7 +933,7 @@ function LetterStage({ onBurst, onRestart }) {
         ),
         /* @__PURE__ */ React.createElement("h2", { className: "mt-3 font-script text-5xl text-rose-deep" }, "I Love You, Sayangkuuu! ❤️"),
         /* @__PURE__ */ React.createElement("p", { className: "mt-4 font-script text-3xl leading-snug text-rose-deep" }, FINAL_WISH),
-        /* @__PURE__ */ React.createElement("p", { className: "mt-4 font-serif text-base text-foreground" }, "Aku sayang kamu hari ini, esok, dan selamanya, Someone! Terima kasih sudah menjadi bagian terindah dalam hidupku 💕✨"),
+        /* @__PURE__ */ React.createElement("p", { className: "mt-4 font-serif text-base text-foreground" }, "Aku sayang kamu hari ini, esok, dan selamanya, Salsa! Terima kasih sudah menjadi bagian terindah dalam hidupku 💕✨"),
         /* @__PURE__ */ React.createElement("div", { className: "mt-5 flex flex-wrap justify-center gap-2" },
           LOVE_BADGES.map((b, i) => /* @__PURE__ */ React.createElement("span", { key: i, className: "chip" }, b))
         ),
@@ -980,9 +980,9 @@ function Confetti({ active }) {
       /* @__PURE__ */ React.createElement(Heart, { className: `h-5 w-5 ${k % 3 ? "text-rose" : "text-gold"}` })
     ))
   );
-}
+});
 
-const FloatingBears = React.memo(function FloatingBears() {
+const FloatingBears = React.npm = React.memo(function FloatingBears() {
   return /* @__PURE__ */ React.createElement("div", { className: "pointer-events-none fixed inset-0 overflow-hidden z-0" },
     [0, 1, 2, 3].map((k) => /* @__PURE__ */ React.createElement(
       "div",
