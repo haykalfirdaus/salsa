@@ -536,6 +536,7 @@ function Birthday() {
   }, []);
   const [stage, setStage] = useState("gift");
   const [burst, setBurst] = useState(0);
+  const [celebrateId, setCelebrateId] = useState(0);
   const go = (s, b = false) => {
     if (b) setBurst((n) => n + 1);
     setStage(s);
@@ -543,6 +544,7 @@ function Birthday() {
   };
   const restart = () => {
     setBurst(0);
+    setCelebrateId(0);
     setStage("gift");
     window.scrollTo({ top: 0, behavior: "instant" });
   };
@@ -560,6 +562,7 @@ function Birthday() {
       /* @__PURE__ */ React.createElement("svg", { className: "cute-sticker", style: { right: "9%", bottom: "12%", width: 34, height: 34, animationDelay: "1.2s" }, viewBox: "0 0 64 64" }, /* @__PURE__ */ React.createElement("path", { d: "M32 30C5 0 0 31 25 36L32 32 39 36C64 31 59 0 32 30Z", fill: "#f8a9c0", stroke: "#d94e7b", strokeWidth: "2" }), /* @__PURE__ */ React.createElement("circle", { cx: "32", cy: "34", r: "5", fill: "#ffd77d" }))
     ),
     /* @__PURE__ */ React.createElement(Confetti, { key: burst, active: burst > 0 }),
+    /* @__PURE__ */ React.createElement(CorrectAnswerEffects, { key: celebrateId, active: celebrateId > 0 }),
     /* @__PURE__ */ React.createElement(MusicPlayer, null),
     /* @__PURE__ */ React.createElement(
       "div",
@@ -568,7 +571,7 @@ function Birthday() {
         AnimatePresence,
         { mode: "wait" },
         stage === "gift" && /* @__PURE__ */ React.createElement(GiftStage, { key: "g", onDone: () => go("quiz", true) }),
-        stage === "quiz" && /* @__PURE__ */ React.createElement(QuizStage, { key: "q", onDone: () => go("card", true) }),
+        stage === "quiz" && /* @__PURE__ */ React.createElement(QuizStage, { key: "q", onCelebrate: () => setCelebrateId((n) => n + 1), onDone: () => go("card", true) }),
         stage === "card" && /* @__PURE__ */ React.createElement(CardStage, { key: "c", onDone: () => go("ask") }),
         stage === "ask" && /* @__PURE__ */ React.createElement(AskStage, { key: "a", onDone: () => go("photos") }),
         stage === "photos" && /* @__PURE__ */ React.createElement(PhotoStage, { key: "p", onDone: () => go("letter", true) }),
@@ -600,66 +603,84 @@ function GiftStage({ onDone }) {
   ), /* @__PURE__ */ React.createElement("p", { className: "mt-4 animate-pulse text-muted-foreground" }, "Ketuk kadonya untuk membuka"));
 }
 
-function QuizStage({ onDone }) {
+function QuizStage({ onDone, onCelebrate }) {
   const [mood, setMood] = useState("idle");
-  const [line, setLine] = useState("Hayoo, siapa yang lagi ultah yaa?");
+  const [line, setLine] = useState("Hayoo, siapa yang lagi ultah yaa? 🎂💗");
   const [offsets, setOffsets] = useState({});
   const shake = useAnimation();
+  const pickedRef = useRef(false);
+
   const pick = (o) => {
+    if (pickedRef.current) return;
     if (o === BIRTHDAY_NAME) {
+      pickedRef.current = true;
       setMood("happy");
-      setLine("Nahh benerr!");
-      setTimeout(onDone, 1200);
+      setLine("YAYYY BENERRR!! 🥳🎂🎁💖✨");
+      if (onCelebrate) onCelebrate();
+      shake.start({ scale: [1, 1.08, 0.98, 1.04, 1], rotate: [0, -2, 2, -1, 0], transition: { duration: 0.65 } });
+      // Let the celebration begin before moving on to the typed birthday greeting.
+      setTimeout(onDone, 2300);
       return;
     }
     setMood("pout");
-    setLine(WRONG_LINES[Math.floor(Math.random() * WRONG_LINES.length)] ?? "Ihh salahh");
+    setLine(WRONG_LINES[Math.floor(Math.random() * WRONG_LINES.length)] ?? "Ihh salahh 😚💗");
     shake.start({ x: [0, -10, 10, -8, 8, 0], transition: { duration: 0.35 } });
     setOffsets((p) => ({ ...p, [o]: { x: Math.round((Math.random() - 0.5) * 70), y: Math.round((Math.random() - 0.5) * 26) } }));
     setTimeout(() => setMood("idle"), 1000);
   };
-  return /* @__PURE__ */ React.createElement(motion.section, { ...page, className: "w-full text-center" }, /* @__PURE__ */ React.createElement(motion.div, { animate: shake, className: "flex flex-col items-center" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-end gap-2" }, /* @__PURE__ */ React.createElement(Bear, { className: "h-24 w-24", mood }), /* @__PURE__ */ React.createElement(Face, { mood })), /* @__PURE__ */ React.createElement(
-    "h2",
-    {
-      className: `mt-4 font-serif text-3xl transition-colors duration-200 ${mood === "happy" ? "text-rose-deep" : "text-foreground"}`
-    },
-    line
-  )), /* @__PURE__ */ React.createElement("div", { className: "mt-8 grid grid-cols-2 gap-4" }, QUIZ_OPTIONS.map((o) => /* @__PURE__ */ React.createElement(
-    motion.button,
-    {
-      key: o,
-      animate: offsets[o] ?? { x: 0, y: 0 },
-      transition: { type: "tween", duration: 0.2 },
-      whileTap: { scale: 0.94 },
-      onClick: () => pick(o),
-      disabled: mood === "happy",
-      className: "btn-soft"
-    },
-    o
-  ))));
+  return /* @__PURE__ */ React.createElement(motion.section, { ...page, className: "w-full text-center" },
+    /* @__PURE__ */ React.createElement(motion.div, { animate: shake, className: "flex flex-col items-center" },
+      /* @__PURE__ */ React.createElement("div", { className: "flex items-end gap-2" },
+        /* @__PURE__ */ React.createElement(Bear, { className: "h-24 w-24", mood }),
+        /* @__PURE__ */ React.createElement(Face, { mood })
+      ),
+      /* @__PURE__ */ React.createElement("h2", { className: `mt-4 font-serif text-3xl transition-colors duration-200 ${mood === "happy" ? "text-rose-deep" : "text-foreground"}` }, line),
+      mood === "happy" && /* @__PURE__ */ React.createElement(motion.div, {
+        initial: { opacity: 0, y: 12, scale: 0.7 },
+        animate: { opacity: 1, y: 0, scale: 1 },
+        transition: { type: "spring", stiffness: 250, damping: 12 },
+        className: "mt-3 flex flex-wrap items-center justify-center gap-2 text-2xl"
+      }, ["🎉", "🥳", "🎂", "🎁", "💗", "✨", "🌸", "🧸", "💖", "💐", "😍", "💕"].map((emoji, i) => /* @__PURE__ */ React.createElement(motion.span, {
+        key: `${emoji}-${i}`,
+        animate: { y: [0, -9, 0], rotate: [0, i % 2 ? 9 : -9, 0], scale: [1, 1.12, 1] },
+        transition: { duration: 0.9 + (i % 4) * 0.15, repeat: Infinity, delay: i * 0.04 }
+      }, emoji))
+    )),
+    /* @__PURE__ */ React.createElement("div", { className: "mt-8 grid grid-cols-2 gap-4" }, QUIZ_OPTIONS.map((o) => /* @__PURE__ */ React.createElement(
+      motion.button,
+      {
+        key: o,
+        animate: offsets[o] ?? { x: 0, y: 0 },
+        transition: { type: "tween", duration: 0.2 },
+        whileTap: { scale: 0.94 },
+        onClick: () => pick(o),
+        disabled: mood === "happy",
+        className: "btn-soft"
+      },
+      o
+    )))
+  );
 }
 
 function CardStage({ onDone }) {
   const text = TEMPLATES.Romantis;
   const textRef = useRef(null);
-  const [done, setDone] = useState(false);
-  const [word, setWord] = useState(0);
+  const doneTimerRef = useRef(null);
 
   useEffect(() => {
     const el = textRef.current;
     if (!el) return;
     el.textContent = "";
-    setDone(false);
-    const duration = 20000;
-    const total = text.length;
     let raf = 0;
     let start = null;
     let lastCount = -1;
+    // A readable typewriter pace: the full greeting appears in roughly 12 seconds.
+    const duration = 12000;
+    const total = text.length;
 
     const tick = (now) => {
       if (start === null) start = now;
-      const elapsed = now - start;
-      const progress = Math.min(1, elapsed / duration);
+      const progress = Math.min(1, (now - start) / duration);
       const count = Math.floor(progress * total);
       if (count !== lastCount) {
         el.textContent = text.slice(0, count);
@@ -669,44 +690,79 @@ function CardStage({ onDone }) {
         raf = requestAnimationFrame(tick);
       } else {
         el.textContent = text;
-        setDone(true);
+        // Continue automatically: there is no card to tap and no extra button.
+        doneTimerRef.current = setTimeout(() => onDone(), 1300);
       }
     };
 
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [text]);
+    return () => {
+      cancelAnimationFrame(raf);
+      if (doneTimerRef.current) clearTimeout(doneTimerRef.current);
+    };
+  }, [text, onDone]);
 
-  const finishNow = () => {
-    if (!done && textRef.current) {
-      textRef.current.textContent = text;
-      setDone(true);
-    }
-  };
-
-  return /* @__PURE__ */ React.createElement(motion.section, { ...page, className: "w-full" }, /* @__PURE__ */ React.createElement(
-    motion.div,
-    {
+  return /* @__PURE__ */ React.createElement(motion.section, { ...page, className: "w-full" },
+    /* @__PURE__ */ React.createElement(motion.div, {
       initial: { opacity: 0, scale: 0.92, y: 16 },
       animate: { opacity: 1, scale: 1, y: 0 },
       transition: { duration: 0.45, ease: "easeOut" },
-      onClick: finishNow,
-      className: "card-paper relative p-8 text-center cursor-pointer"
+      className: "card-paper relative p-7 text-center"
     },
-    /* @__PURE__ */ React.createElement(Flower, { className: "absolute -left-6 -top-6 h-16 w-16 animate-spin-slow" }),
-    /* @__PURE__ */ React.createElement(Flower, { className: "absolute -bottom-6 -right-6 h-14 w-14 animate-spin-slow" }),
-    /* @__PURE__ */ React.createElement("p", { className: "font-serif text-xs uppercase tracking-[0.4em] text-rose-deep" }, "ucapan kado"),
-    /* @__PURE__ */ React.createElement("h2", { className: "mt-2 font-script text-5xl text-rose-deep" }, "Happy Birthday"),
-    /* @__PURE__ */ React.createElement(Bear, { className: "absolute -bottom-10 left-1/2 h-20 w-20 -translate-x-1/2" })
-  ), /* @__PURE__ */ React.createElement(
-    "button",
-    {
-      onClick: () => setWord((w) => (w + 1) % SWEET_WORDS.length),
-      className: "mt-8 w-full rounded-2xl border border-border bg-card p-4 text-center italic text-muted-foreground transition-transform active:scale-95"
-    },
-    /* @__PURE__ */ React.createElement("span", { className: "block" }, '"', SWEET_WORDS[word], '"'),
-    /* @__PURE__ */ React.createElement("span", { className: "mt-1 block text-xs not-italic" }, "ketuk untuk kata manis berikutnya")
-  ), /* @__PURE__ */ React.createElement(AnimatePresence, null, done && /* @__PURE__ */ React.createElement(motion.div, { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.3 }, className: "mt-6 text-center" }, /* @__PURE__ */ React.createElement("button", { onClick: onDone, className: "btn-primary" }, "Lanjut"))));
+      /* @__PURE__ */ React.createElement(Flower, { className: "absolute -left-6 -top-6 h-16 w-16 animate-spin-slow" }),
+      /* @__PURE__ */ React.createElement(Flower, { className: "absolute -bottom-6 -right-6 h-14 w-14 animate-spin-slow" }),
+      /* @__PURE__ */ React.createElement("p", { className: "font-serif text-xs uppercase tracking-[0.4em] text-rose-deep" }, "ucapan kado"),
+      /* @__PURE__ */ React.createElement("h2", { className: "mt-2 font-script text-5xl text-rose-deep" }, "Happy Birthday 🎂"),
+      /* This was missing before, so the typewriter effect had no actual text element to write into. */
+      /* @__PURE__ */ React.createElement("p", { ref: textRef, className: "mt-5 min-h-32 whitespace-pre-wrap text-base leading-relaxed text-foreground", "aria-live": "polite" }),
+      /* @__PURE__ */ React.createElement(Bear, { className: "mx-auto mt-4 h-20 w-20", mood: "happy" }),
+      /* @__PURE__ */ React.createElement("p", { className: "mt-2 font-script text-2xl text-rose-deep" }, "Semoga harimu penuh cinta yaa 💗✨")
+    )
+  );
+}
+
+function CorrectAnswerEffects({ active }) {
+  const [visible, setVisible] = useState(active);
+  const [loveOn, setLoveOn] = useState(false);
+  useEffect(() => {
+    if (!active) return;
+    // Let the emoji burst lead, then send in the love shower almost immediately after.
+    const loveTimer = setTimeout(() => setLoveOn(true), 220);
+    const endTimer = setTimeout(() => setVisible(false), 6700);
+    return () => { clearTimeout(loveTimer); clearTimeout(endTimer); };
+  }, [active]);
+  if (!active || !visible) return null;
+  const emojis = ["🥳","🎉","🎂","🎁","💖","💕","💗","✨","🌸","🧸","💐","😍","💝","🎀","🌷","😘","💞","💓","⭐","🫶","💘","🍰","🎊","💟","🌈","🦋","🌼","💌","❤️","🤍","💛","🩷","🥰","🎈","🌟","🪄","🧁","💋","💐","🐻","🌹","🎀","💖","🎉","💕","✨"];
+  return /* @__PURE__ */ React.createElement("div", { className: "pointer-events-none fixed inset-0 z-[70] overflow-hidden", "aria-hidden": "true" },
+    /* Big happy reaction in the middle */
+    /* @__PURE__ */ React.createElement(motion.div, {
+      initial: { opacity: 0, scale: 0.25, y: 25, rotate: -8 },
+      animate: { opacity: [0, 1, 1, 0], scale: [0.25, 1.12, 1, 0.9], y: [25, 0, -8, -28], rotate: [-8, 4, 0, 3] },
+      transition: { duration: 2.25, ease: "easeOut" },
+      className: "absolute inset-x-0 top-[38%] px-3 text-center font-script text-4xl text-rose-deep drop-shadow-lg"
+    }, "YAYYY BENER BANGETT!! 🥳💖🎂"),
+    /* A dense burst of cute celebration emojis */
+    emojis.map((emoji, i) => /* @__PURE__ */ React.createElement(motion.span, {
+      key: `emoji-${i}`,
+      className: "absolute select-none",
+      style: { left: `${(i * 37 + 3) % 97}%`, top: `${58 + ((i * 19) % 39)}%`, fontSize: `${22 + (i % 4) * 6}px` },
+      initial: { opacity: 0, scale: 0.35, y: 12, rotate: 0 },
+      animate: { opacity: [0, 1, 1, 0], scale: [0.35, 1.15, 1, 0.8], y: [12, -65 - (i % 4) * 35, -190 - (i % 7) * 35], x: [0, (i % 2 ? -1 : 1) * (22 + (i % 5) * 10), (i % 2 ? 1 : -1) * (36 + (i % 6) * 9)], rotate: [0, (i % 2 ? -1 : 1) * (20 + (i % 4) * 12), 0] },
+      transition: { duration: 2.5 + (i % 6) * 0.22, delay: (i % 12) * 0.045, ease: "easeOut" }
+    }, emoji)),
+    loveOn && Array.from({ length: 64 }, (_, i) => /* @__PURE__ */ React.createElement(Heart, {
+      key: `heart-${i}`,
+      className: `love-rain absolute ${i % 4 === 0 ? "text-rose" : i % 4 === 1 ? "text-rose-deep" : i % 4 === 2 ? "text-blush" : "text-gold"}`,
+      style: {
+        left: `${(i * 23 + 2) % 98}%`,
+        bottom: `${-30 - (i % 4) * 12}px`,
+        width: `${15 + (i % 5) * 7}px`,
+        animationDuration: `${3.2 + (i % 6) * 0.45}s`,
+        animationDelay: `${(i % 16) * 0.07}s`,
+        opacity: 0.95
+      }
+    }))
+  );
 }
 
 function AskStage({ onDone }) {
