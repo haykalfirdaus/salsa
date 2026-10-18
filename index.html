@@ -618,7 +618,7 @@ function QuizStage({ onDone, onCelebrate }) {
     if (o === BIRTHDAY_NAME) {
       pickedRef.current = true;
       setMood("happy");
-      setLine("YAYYY, BENER! 🥳💗");
+      setLine("");
       if (onCelebrate) onCelebrate();
       shake.start({ scale: [1, 1.08, 0.98, 1.04, 1], rotate: [0, -2, 2, -1, 0], transition: { duration: 0.65 } });
       // Let the celebration begin before moving on to the typed birthday greeting.
@@ -735,13 +735,7 @@ function CorrectAnswerEffects({ active }) {
   if (!active || !visible) return null;
   const emojis = ["🎉", "🎂", "💗", "🎁", "✨", "🥳", "🌸", "💕"];
   return /* @__PURE__ */ React.createElement("div", { className: "pointer-events-none fixed inset-0 z-[70] overflow-hidden", "aria-hidden": "true" },
-    /* One clear greeting is the focus; decorations stay small and fade quickly. */
-    /* @__PURE__ */ React.createElement(motion.div, {
-      initial: { opacity: 0, scale: 0.88, y: 12 },
-      animate: { opacity: [0, 1, 1, 0], scale: [0.88, 1.04, 1, 0.98], y: [12, 0, 0, -14] },
-      transition: { duration: 1.55, times: [0, 0.18, 0.68, 1], ease: "easeOut" },
-      className: "absolute inset-x-4 top-[37%] mx-auto w-fit max-w-[90vw] rounded-2xl border border-rose/20 bg-white/90 px-5 py-3 text-center font-script text-3xl text-rose-deep shadow-lg backdrop-blur-sm sm:text-4xl"
-    }, "YAYYY, BENER! 🥳💗"),
+    /* Brief floating emojis and hearts only; no persistent success banner. */
     emojis.map((emoji, i) => /* @__PURE__ */ React.createElement(motion.span, {
       key: `quiz-emoji-${i}`,
       className: "absolute select-none",
