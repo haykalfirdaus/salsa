@@ -314,7 +314,7 @@ const { AnimatePresence, motion, useAnimation } = Motion;
 ===================================================================== */
 const EDITABLE_TEXT = {
   // >>> TANGGAL DAN PESAN HALAMAN PENGUNCI — EDIT DI SINI <<<
-  unlockAt: "2026-10-24T00:00:00+08:00",
+  unlockAt: "2026-10-10T00:00:00+08:00",
   lockTitle: "Kejutan kecil buat kamu 💌",
   lockMessage: "Belum waktunya dibuka, sayang. Ada sesuatu yang spesial menunggumu 💗",
   lockNote: "Balik lagi tepat waktu yaa, aku tunggu di sini ✨",
@@ -396,7 +396,7 @@ const EDITABLE_TEXT = {
     "Takdir SMA yang mempertemukan aku kembali denganmu, {nama}",
     "Seikat rindu yang tumbuh sejak dulu, kini mekar untukmu",
     "Bersamamu, setiap detik terasa seperti keajaiban yang nyata",
-    "Bersamamu, setiap detik terasa seperti keajaiban yang nyata"
+    "Semoga langkah kita selalu beriringan selamanya"
   ],
   photoRotations: [-4, 3, -2, 4, 4],
 
@@ -803,7 +803,7 @@ function CardStage({ onDone }) {
     let start = null;
     let lastCount = -1;
     // A readable typewriter pace: the full greeting appears in roughly 12 seconds.
-    const duration = 12000;
+    const duration = text.length * 60;
     const total = text.length;
 
     const tick = (now) => {
@@ -828,7 +828,7 @@ function CardStage({ onDone }) {
       cancelAnimationFrame(raf);
       if (doneTimerRef.current) clearTimeout(doneTimerRef.current);
     };
-  }, [text, onDone]);
+  }, [text]);
 
   return /* @__PURE__ */ React.createElement(motion.section, { ...page, className: "w-full" },
     /* @__PURE__ */ React.createElement(motion.div, {
@@ -1075,7 +1075,7 @@ function LetterStage({ onBurst }) {
         finish();
         return;
       }
-      const speedPxPerSec = maxScroll / 42;
+      const speedPxPerSec = 25;
       el.scrollTop = Math.min(maxScroll, el.scrollTop + speedPxPerSec * dt);
       if (el.scrollTop >= maxScroll - 1) {
         el.scrollTop = maxScroll;
